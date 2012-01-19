@@ -3,8 +3,9 @@
     /**
      * Email
      * 
-     * Simple class which provides the ability to render an email using native
-     * PHP within a template.
+     * Class which provides a simple API for defining a template for an outgoing
+     * email. Using this class, emails can use native PHP (including global
+     * variables) for output.
      * 
      * Does not manage sending of mail. For that an external mailer (like
      * Postmark) should be used.
