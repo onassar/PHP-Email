@@ -16,7 +16,7 @@ party (like AWS SES, or Postmark).
 ```
 
 
-### Sample Instantiation
+### Sample Rendering
 
 ``` php
 <?php
