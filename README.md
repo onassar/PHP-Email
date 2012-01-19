@@ -15,7 +15,6 @@ party (like AWS SES, or Postmark).
 </div>
 ```
 
-
 ### Sample Rendering
 
 ``` php
@@ -31,5 +30,34 @@ party (like AWS SES, or Postmark).
     ));
     echo $message;
     exit(0);
+
+```
+
+### Sample Mailing
+
+``` php
+<?php
+
+    // load dependency
+    require_once APP . '/vendors/PHP-Email/Email.class.php';
+    
+    // template and render
+    $email = (new Email(APP . ('/includes/emails/hello.inc.php'));
+    $message = $email->render(array(
+        'message' => 'Hello World!'
+    ));
+
+    // postmark
+    require_once APP . '/vendors/postmark/Postmark.php';
+    define('POSTMARKAPP_API_KEY', '***');
+    define('POSTMARKAPP_MAIL_FROM_ADDRESS', 'onassar@gmail.com');
+    define('POSTMARKAPP_MAIL_FROM_NAME', 'Oliver Nassar');
+
+    // send
+    Mail_Postmark::compose()
+    ->addTo('onassar@gmail.com', '')
+    ->subject('Sample Email')
+    ->messageHtml($message)
+    ->send();
 
 ```

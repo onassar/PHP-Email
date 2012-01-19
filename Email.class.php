@@ -60,11 +60,3 @@
             return $_response;
         }
     }
-/*
-    // generate
-    Mail_Postmark::compose()
-    ->addTo($to, '')
-    ->subject($subject)
-    ->messageHtml($message)
-    ->send();
-*/
