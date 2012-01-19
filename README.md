@@ -5,14 +5,16 @@ PHP-Email provides a class which exposes a simple API for defining a template
 and rendering it with native PHP (including global/native variables).
 
 It&#039;s not meant to send mail. For that, you can use an SMTP server or third
-party (like AWS SES, or Postmark).
+party (like [AWS SES](http://aws.amazon.com/ses/), or
+[Postmark](http://postmarkapp.com/)).
 
 ### Sample Template
 
 ``` html
-<div style="background-color: red; width: 100px; height: 100px; text-align: center; line-height: 100px;">
-    <?= ($message) ?> (<?= ($_SERVER['REMOTE_ADDR']) ?>)
+<div style="background-color: red; width: 100px; height: 100px; text-align: center; line-height: 50px;">
+    <?= ($message) ?><br />(<?= ($_SERVER['REMOTE_ADDR']) ?>)
 </div>
+
 ```
 
 ### Sample Rendering
@@ -42,13 +44,13 @@ party (like AWS SES, or Postmark).
     require_once APP . '/vendors/PHP-Email/Email.class.php';
     
     // template and render
-    $email = (new Email(APP . ('/includes/emails/hello.inc.php'));
+    $email = (new Email(APP . ('/includes/emails/hello.inc.php')));
     $message = $email->render(array(
         'message' => 'Hello World!'
     ));
 
     // postmark
-    require_once APP . '/vendors/postmark/Postmark.php';
+    require_once APP . '/vendors/postmark-php/Postmark.php';
     define('POSTMARKAPP_API_KEY', '***');
     define('POSTMARKAPP_MAIL_FROM_ADDRESS', 'onassar@gmail.com');
     define('POSTMARKAPP_MAIL_FROM_NAME', 'Oliver Nassar');
@@ -59,5 +61,6 @@ party (like AWS SES, or Postmark).
     ->subject('Sample Email')
     ->messageHtml($message)
     ->send();
+    exit(0);
 
 ```

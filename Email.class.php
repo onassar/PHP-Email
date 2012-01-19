@@ -10,6 +10,8 @@
      * Does not manage sending of mail. For that an external mailer (like
      * Postmark) should be used.
      * 
+     * @source https://github.com/onassar/PHP-Email
+     * @see    https://github.com/Znarkus/postmark-php
      * @author Oliver Nassar <onassar@gmail.com>
      */
     class Email
@@ -33,7 +35,7 @@
          */
         public function __construct($template)
         {
-            $this->_template = file_get_contents($template);
+            $this->_template = $template;
         }
 
         /**
@@ -43,7 +45,7 @@
          * @param  array $__data
          * @return string
          */
-        private function render(array $__data)
+        public function render(array $__data)
         {
             // bring variables forward
             foreach ($__data as $_name => $_value) {
