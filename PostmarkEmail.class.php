@@ -29,16 +29,29 @@
         /**
          * send
          * 
+         * Uses the Postmark service (and preset constants) to send a piece of
+         * mail.
          * 
-         * 
+         * @notes  If sending out compious amounts of mail, static usage may be
+         *         preferred, as it may be more memory-conscious. See 
+         *         https://github.com/Znarkus/postmark-php for more information.
          * @access public
-         * @param  Array|String $to
-         * @param  String $subject
-         * @param  String $message
-         * @param  String|null $tag
+         * @param  String|Array $to Email of the recipient, or
+         *         associatively-keyed (with keys <address> and <name>) array
+         *         with recipient details. In my experience, the address is
+         *         enough
+         * @param  String $subject (default: '(test)')
+         * @param  String $message (default: '(test)') Ought to be HTML
+         * @param  String|null $tag Optional string which "tags" the email for
+         *         further breakdown within the Postmark dashboard
          * @return void
          */
-        public function send($to, $subject, $message, $tag = null)
+        public function send(
+            $to,
+            $subject = '(test)',
+            $message = '(test)',
+            $tag = null
+        )
         {
             // to details
             $address = $to;

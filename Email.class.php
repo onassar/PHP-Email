@@ -18,7 +18,9 @@
         /**
          * _template
          * 
-         * 
+         * The path to the PHP file that ought to be used as a template. Can
+         * contain native PHP, and make use of variables passed into the
+         * <render> method as well as in the <$GLOBALS> array.
          * 
          * @var    String
          * @access protected
@@ -28,7 +30,7 @@
         /**
          * __construct
          * 
-         * 
+         * Sets the path to the template, for use by the <render> method.
          * 
          * @access public
          * @param  String $template The path to the template file, containing
@@ -44,7 +46,8 @@
         /**
          * render
          * 
-         * 
+         * Accepts array-argument of associatively-keyed values to accomodate
+         * the rendering of the template set in the constructor.
          * 
          * @access public
          * @param  array $__data

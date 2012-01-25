@@ -27,7 +27,7 @@ that, you can use the `PostmarkEmail` class, or another third party service
     require_once APP . '/vendors/PHP-Email/Email.class.php';
     
     // template and render
-    $email = (new Email(APP . ('/includes/emails/hello.inc.php'));
+    $email = (new Email('sample.inc.php'));
     $message = $email->render(array(
         'message' => 'Hello World!'
     ));
@@ -45,7 +45,7 @@ that, you can use the `PostmarkEmail` class, or another third party service
     require_once APP . '/vendors/PHP-Email/Email.class.php';
     
     // template and render
-    $email = (new Email(APP . ('/includes/emails/sample.inc.php')));
+    $email = (new Email('sample.inc.php'));
     $message = $email->render(array(
         'message' => 'Hello World!'
     ));
@@ -59,7 +59,7 @@ that, you can use the `PostmarkEmail` class, or another third party service
     // send
     Mail_Postmark::compose()
     ->addTo('onassar@gmail.com', '')
-    ->subject('Sample Email')
+    ->subject('Hello World!')
     ->messageHtml($message)
     ->send();
     exit(0);
@@ -81,7 +81,7 @@ that, you can use the `PostmarkEmail` class, or another third party service
 
     // load postmark mail class; assign template
     require_once APP . '/vendors/PHP-Email/PostmarkEmail.class.php';
-    $email = (new PostmarkEmail(APP . '/vendors/PHP-Email/sample.inc.php'));
+    $email = (new PostmarkEmail('sample.inc.php'));
 
     // generate and send email
     $message = $email->render(array(
@@ -120,3 +120,6 @@ that, you can use the `PostmarkEmail` class, or another third party service
     );
 
 ```
+
+The above example works fully, however isn&#039;t essential (or important
+really, imo).
