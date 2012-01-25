@@ -44,7 +44,7 @@ party (like [AWS SES](http://aws.amazon.com/ses/), or
     require_once APP . '/vendors/PHP-Email/Email.class.php';
     
     // template and render
-    $email = (new Email(APP . ('/includes/emails/hello.inc.php')));
+    $email = (new Email(APP . ('/includes/emails/sample.inc.php')));
     $message = $email->render(array(
         'message' => 'Hello World!'
     ));
@@ -62,5 +62,60 @@ party (like [AWS SES](http://aws.amazon.com/ses/), or
     ->messageHtml($message)
     ->send();
     exit(0);
+
+```
+
+### Sample Postmark Mailing
+
+``` php
+<?php
+
+    // Postmark SDK loading
+    require_once APP . '/vendors/postmark-php/Postmark.php';
+
+    // Postmark constants
+    define('POSTMARKAPP_API_KEY', 'fb2e27a8-aa1a-4c91-828c-0c06067e82f6');
+    define('POSTMARKAPP_MAIL_FROM_ADDRESS', 'onassar@gmail.com');
+    define('POSTMARKAPP_MAIL_FROM_NAME', 'Oliver Nassar');
+
+    // load postmark mail class; assign template
+    require_once APP . '/vendors/PHP-Email/PostmarkEmail.class.php';
+    $email = (new PostmarkEmail(APP . '/vendors/PHP-Email/sample.inc.php'));
+
+    // generate and send email
+    $message = $email->render(array(
+        'message' => 'Hello World!'
+    ));
+    $email->send(
+        'onassar@gmail.com',
+        'Hello World!',
+        $message,
+        'Sample Tag'
+    );
+    exit(0);
+
+```
+
+### Alternative Receiver Specification
+
+``` php
+<?php
+
+    // no name specified
+    $email->send(
+        'onassar@gmail.com',
+        'Hello World!',
+        $message
+    );
+
+    // name and email specified
+    $email->send(
+        array(
+            'address' => 'onassar@gmail.com',
+            'name' => 'Oliver Nassar'
+        ),
+        'Hello World!',
+        $message
+    );
 
 ```

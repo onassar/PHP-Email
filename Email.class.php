@@ -11,13 +11,14 @@
      * Postmark) should be used.
      * 
      * @source https://github.com/onassar/PHP-Email
-     * @see    https://github.com/Znarkus/postmark-php
      * @author Oliver Nassar <onassar@gmail.com>
      */
     class Email
     {
         /**
          * _template
+         * 
+         * 
          * 
          * @var    String
          * @access protected
@@ -26,6 +27,8 @@
 
         /**
          * __construct
+         * 
+         * 
          * 
          * @access public
          * @param  String $template The path to the template file, containing
@@ -41,11 +44,13 @@
         /**
          * render
          * 
+         * 
+         * 
          * @access public
          * @param  array $__data
          * @return string
          */
-        public function render(array $__data)
+        public function render(array $__data = array())
         {
             // bring variables forward
             foreach ($__data as $_name => $_value) {
