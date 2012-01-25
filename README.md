@@ -7,7 +7,7 @@ out (in the case of the `PostmarkEmail` class).
 
 Use of the `Email` class alone will not provide email sending functionality. For
 that, you can use the `PostmarkEmail` class, or another third party service
-(eg. [AWS SES](http://aws.amazon.com/ses/).
+(eg. [AWS SES](http://aws.amazon.com/ses/)).
 
 ### Sample Template
 
