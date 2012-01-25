@@ -1,12 +1,13 @@
 PHP Email
 ===
 
-PHP-Email provides a class which exposes a simple API for defining a template
-and rendering it with native PHP (including global/native variables).
+PHP-Email provides classes which expose a simple API for defining a template,
+rendering it with native PHP (including global/native variables), and sending it
+out (in the case of the `PostmarkEmail` class).
 
-It&#039;s not meant to send mail. For that, you can use an SMTP server or third
-party (like [AWS SES](http://aws.amazon.com/ses/), or
-[Postmark](http://postmarkapp.com/)).
+Use of the `Email` class alone will not provide email sending functionality. For
+that, you can use the `PostmarkEmail` class, or another third party service
+(eg. [AWS SES](http://aws.amazon.com/ses/).
 
 ### Sample Template
 
