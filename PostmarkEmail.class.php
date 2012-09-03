@@ -67,6 +67,14 @@
             ->subject($subject)
             ->messageHtml($message);
 
+            // if a from address was specified (via the constructor)
+            if (!empty($this->_from)) {
+                $postmark->from(
+                    $this->_from['email'],
+                    $this->_from['name']
+                );
+            }
+
             // if a tag was specified (native to how Postmark organizes emails)
             if (!is_null($tag)) {
                 $postmark->tag($tag);
