@@ -33,12 +33,12 @@
          * Sets the path to the template, for use by the <render> method.
          * 
          * @access public
-         * @param  String $template The path to the template file, containing
-         *         markup mixed with standard PHP echos. The path specified here
-         *         must be absolute.
+         * @param  String $template (default: null) The path to the template
+         *         file, containing markup mixed with standard PHP echos. The
+         *         path specified here must be absolute.
          * @return void
          */
-        public function __construct($template)
+        public function __construct($template = null)
         {
             $this->_template = $template;
         }
