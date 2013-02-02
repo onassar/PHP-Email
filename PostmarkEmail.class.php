@@ -44,13 +44,15 @@
          * @param  String $message (default: '(test)') Ought to be HTML
          * @param  String|null $tag Optional string which "tags" the email for
          *         further breakdown within the Postmark dashboard
+         * @param  boolean $sendAsHtml (default: true)
          * @return void
          */
         public function send(
             $to,
             $subject = '(test)',
             $message = '(test)',
-            $tag = null
+            $tag = null,
+            $sendAsHtml = true
         )
         {
             // to details
@@ -64,8 +66,12 @@
             // generate
             $postmark = (new Mail_Postmark());
             $postmark->addTo($address, $name)
-            ->subject($subject)
-            ->messageHtml($message);
+            ->subject($subject);
+            if ($sendAsHtml === true) {
+                $postmark->messageHtml($message);
+            } else {
+                $postmark->messagePlain($message);
+            }
 
             // if a from address was specified (via the constructor)
             if (!empty($this->_from)) {
