@@ -4,7 +4,7 @@
     require_once 'Email.class.php';
 
     // check for <Mail_Postmark> class dependency
-    if (!class_exists('Mail_Postmark')) {
+    if (!class_exists('Postmark\Mail')) {
         throw new Exception('Postmark SDK not found.');
     }
 
