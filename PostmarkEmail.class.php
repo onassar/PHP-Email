@@ -64,9 +64,13 @@
             }
 
             // generate
-            $postmark = (new Mail_Postmark());
+            $postmark = (new Postmark\Mail(POSTMARKAPP_API_KEY));
             $postmark->addTo($address, $name)
-            ->subject($subject);
+            ->subject($subject)
+            ->from(
+                POSTMARKAPP_MAIL_FROM_ADDRESS,
+                POSTMARKAPP_MAIL_FROM_NAME
+            );
             if ($sendAsHtml === true) {
                 $postmark->messageHtml($message);
             } else {
