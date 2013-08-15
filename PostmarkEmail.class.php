@@ -45,7 +45,7 @@
          * @param  String|null $tag Optional string which "tags" the email for
          *         further breakdown within the Postmark dashboard
          * @param  boolean $sendAsHtml (default: true)
-         * @return void
+         * @return string
          */
         public function send(
             $to,
@@ -90,7 +90,9 @@
                 $postmark->tag($tag);
             }
 
-            // send
-            $postmark->send();
+            // Send, passing back the message Id
+            return $postmark->send(array(
+                'returnMessageId' => true
+            ));
         }
     }
