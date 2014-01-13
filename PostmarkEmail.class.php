@@ -45,6 +45,7 @@
          * @param  String|null $tag Optional string which "tags" the email for
          *         further breakdown within the Postmark dashboard
          * @param  boolean $sendAsHtml (default: true)
+         * @param  boolean $from (default: true)
          * @return string|Exception
          */
         public function send(
@@ -52,7 +53,8 @@
             $subject = '(test)',
             $message = '(test)',
             $tag = null,
-            $sendAsHtml = true
+            $sendAsHtml = true,
+            $from = false
         )
         {
             // to details
@@ -63,14 +65,22 @@
                 $name = $to['name'];
             }
 
-            // generate
+            // Recipient, subject and sender
             $postmark = (new Postmark\Mail(POSTMARKAPP_API_KEY));
-            $postmark->addTo($address, $name)
-            ->subject($subject)
-            ->from(
-                POSTMARKAPP_MAIL_FROM_ADDRESS,
-                POSTMARKAPP_MAIL_FROM_NAME
-            );
+            $postmark->addTo($address, $name)->subject($subject);
+            if ($from === false) {
+                $postmark->from(
+                    POSTMARKAPP_MAIL_FROM_ADDRESS,
+                    POSTMARKAPP_MAIL_FROM_NAME
+                );
+            } else {
+                $postmark->from(
+                    $from['email'],
+                    $from['name']
+                );
+            }
+
+            // Html vs plain text
             if ($sendAsHtml === true) {
                 $postmark->messageHtml($message);
             } else {
