@@ -45,7 +45,7 @@
          * @param  String|null $tag Optional string which "tags" the email for
          *         further breakdown within the Postmark dashboard
          * @param  boolean $sendAsHtml (default: true)
-         * @param  boolean $from (default: true)
+         * @param  false|array $from (default: false)
          * @return string|Exception
          */
         public function send(
