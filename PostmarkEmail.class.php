@@ -95,6 +95,9 @@
                 );
             }
 
+            // Email open tracking
+            $postmark->trackOpen();
+
             // if a tag was specified (native to how Postmark organizes emails)
             if (!is_null($tag)) {
                 $postmark->tag($tag);
