@@ -36,13 +36,13 @@
          *         preferred, as it may be more memory-conscious. See 
          *         https://github.com/Znarkus/postmark-php for more information.
          * @access public
-         * @param  String|Array $to Email of the recipient, or
-         *         associatively-keyed (with keys <address> and <name>) array
-         *         with recipient details. In my experience, the address is
+         * @param  string|array $to Email of the recipient, or
+         *         associatively-keyed (with keys <email> and <name>) array
+         *         with recipient details. In my experience, the email is
          *         enough
-         * @param  String $subject (default: '(test)')
-         * @param  String $message (default: '(test)') Ought to be HTML
-         * @param  String|null $tag Optional string which "tags" the email for
+         * @param  string $subject (default: '(test)')
+         * @param  string $message (default: '(test)') Ought to be HTML
+         * @param  string|null $tag Optional string which "tags" the email for
          *         further breakdown within the Postmark dashboard
          * @param  boolean $sendAsHtml (default: true)
          * @param  false|array $from (default: false)
@@ -55,44 +55,45 @@
             $tag = null,
             $sendAsHtml = true,
             $from = false
-        )
-        {
-            // to details
-            $address = $to;
+        ) {
+            // Instance
+            $postmark = (new Postmark\Mail(POSTMARKAPP_API_KEY));
+
+            // Recipient
+            $email = $to;
             $name = $to;
             if (is_array($to)) {
-                $address = $to['address'];
+                $email = $to['email'];
                 $name = $to['name'];
             }
+            $postmark->addTo($email, $name);
 
-            // Recipient, subject and sender
-            $postmark = (new Postmark\Mail(POSTMARKAPP_API_KEY));
-            $postmark->addTo($address, $name)->subject($subject);
-            if ($from === false) {
-                $postmark->from(
-                    POSTMARKAPP_MAIL_FROM_ADDRESS,
-                    POSTMARKAPP_MAIL_FROM_NAME
-                );
-            } else {
+            // Subject
+            $postmark->subject($subject);
+
+            // Sender
+            if ($from !== false) {
                 $postmark->from(
                     $from['email'],
                     $from['name']
                 );
-            }
-
-            // Html vs plain text
-            if ($sendAsHtml === true) {
-                $postmark->messageHtml($message);
-            } else {
-                $postmark->messagePlain($message);
-            }
-
-            // if a from address was specified (via the constructor)
-            if (!empty($this->_from)) {
+            } elseif ($this->_from !== array()) {
                 $postmark->from(
                     $this->_from['email'],
                     $this->_from['name']
                 );
+            } else {
+                $postmark->from(
+                    POSTMARKAPP_MAIL_FROM_ADDRESS,
+                    POSTMARKAPP_MAIL_FROM_NAME
+                );
+            }
+
+            // Body
+            if ($sendAsHtml === true) {
+                $postmark->messageHtml($message);
+            } else {
+                $postmark->messagePlain($message);
             }
 
             // Email open tracking

@@ -18,7 +18,7 @@
         /**
          * _from
          * 
-         * @var    Array
+         * @var    array
          * @access protected
          */
         protected $_from;
@@ -30,7 +30,7 @@
          * contain native PHP, and make use of variables passed into the
          * <render> method as well as in the <$GLOBALS> array.
          * 
-         * @var    String
+         * @var    string
          * @access protected
          */
         protected $_template;
@@ -41,10 +41,10 @@
          * Sets the path to the template, for use by the <render> method.
          * 
          * @access public
-         * @param  String $template (default: null) The path to the template
+         * @param  string $template (default: null) The path to the template
          *         file, containing markup mixed with standard PHP echos. The
          *         path specified here must be absolute.
-         * @param  Array $from (default: array)
+         * @param  array $from (default: array)
          * @return void
          */
         public function __construct($template = null, $from = array())
