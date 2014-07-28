@@ -105,6 +105,9 @@
                 $data['text'] = $message;
             }
 
+            // Open trakcing
+            $data['o:tracking'] = true;
+
             // Send
             try {
                 $response = $this->_reference->sendMessage(
