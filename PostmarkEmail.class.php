@@ -110,7 +110,7 @@
                     'returnMessageId' => true
                 ));
             } catch (Exception $exception) {
-                return $exception;
+                return new Exception($exception->getMessage());
             }
         }
     }
