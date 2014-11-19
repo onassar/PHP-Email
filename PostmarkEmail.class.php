@@ -63,10 +63,18 @@
             $email = $to;
             $name = $to;
             if (is_array($to)) {
-                $email = $to['email'];
-                $name = $to['name'];
+                if (isset($to['email'])) {
+                    $email = $to['email'];
+                    $name = $to['name'];
+                    $postmark->addTo($email, $name);
+                } else {
+                    foreach ($to as $address) {
+                        $postmark->addTo($address, $address);
+                    }
+                }
+            } else {
+                $postmark->addTo($email, $name);
             }
-            $postmark->addTo($email, $name);
 
             // Subject
             $postmark->subject($subject);
