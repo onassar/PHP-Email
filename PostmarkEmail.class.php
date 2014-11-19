@@ -46,6 +46,7 @@
          *         further breakdown within the Postmark dashboard
          * @param  boolean $sendAsHtml (default: true)
          * @param  false|array $from (default: false)
+         * @param  boolean|array $attachments (default: false)
          * @return string|Exception
          */
         public function send(
@@ -54,7 +55,8 @@
             $message = '(test)',
             $tag = null,
             $sendAsHtml = true,
-            $from = false
+            $from = false,
+            $attachments = false
         ) {
             // Instance
             $postmark = (new Postmark\Mail(POSTMARKAPP_API_KEY));
@@ -95,6 +97,13 @@
                     POSTMARKAPP_MAIL_FROM_ADDRESS,
                     POSTMARKAPP_MAIL_FROM_NAME
                 );
+            }
+
+            // Attachments
+            if ($attachments !== false) {
+                foreach ((array) $attachments as $attachment) {
+                    $postmark->addAttachment($attachment);
+                }
             }
 
             // Body

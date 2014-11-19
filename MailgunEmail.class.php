@@ -67,6 +67,7 @@
          *         further breakdown within the Postmark dashboard
          * @param  boolean $sendAsHtml (default: true)
          * @param  false|array $from (default: false)
+         * @param  boolean|array $attachments (default: false)
          * @return string|Exception
          */
         public function send(
@@ -75,7 +76,8 @@
             $message = '(test)',
             $tag = null,
             $sendAsHtml = true,
-            $from = false
+            $from = false,
+            $attachments = false
         ) {
             // Recipient
             $data = array();
@@ -98,6 +100,15 @@
                     ($this->_from['email']) . '>';
             }
 
+            // Attachments
+            $postFiles = array();
+            if ($attachments !== false) {
+                $postFiles['attachment'] = array();
+                foreach ((array) $attachments as $attachment) {
+                    array_push($postFiles['attachment'], ($attachment));
+                }
+            }
+
             // Body
             if ($sendAsHtml === true) {
                 $data['html'] = $message;
@@ -112,7 +123,8 @@
             try {
                 $response = $this->_reference->sendMessage(
                     $this->_from['domain'],
-                    $data
+                    $data,
+                    $postFiles
                 );
                 if ((int) $response->http_response_code === 200) {
                     return $response->http_response_body->id;
