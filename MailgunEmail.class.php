@@ -84,10 +84,19 @@
             $name = $to;
             $email = $to;
             if (is_array($to)) {
-                $name = $to['name'];
-                $email = $to['email'];
+                if (isset($to['name'])) {
+                    $name = $to['name'];
+                    $email = $to['email'];
+                    $data['to'] = ($name) . ' <'.  ($email) . '>';
+                } else {
+                    $data['to'] = array();
+                    foreach ($to as $address) {
+                        $data['to'][] = $address;
+                    }
+                }
+            } else {
+                $data['to'] = ($name) . ' <'.  ($email) . '>';
             }
-            $data['to'] = ($name) . ' <'.  ($email) . '>';
 
             // Subject
             $data['subject'] = $subject;
@@ -105,7 +114,7 @@
             if ($attachments !== false) {
                 $postFiles['attachment'] = array();
                 foreach ((array) $attachments as $attachment) {
-                    array_push($postFiles['attachment'], ($attachment));
+                    array_push($postFiles['attachment'], $attachment);
                 }
             }
 
