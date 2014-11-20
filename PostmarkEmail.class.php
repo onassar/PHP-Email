@@ -12,11 +12,7 @@
      * PostmarkEmail
      * 
      * Extends the email class to provide email generation functionality along
-     * with sending through the Postmark API. Expects the following three
-     * constants to be set in order for mail to be sent properly:
-     * - POSTMARKAPP_API_KEY
-     * - POSTMARKAPP_MAIL_FROM_ADDRESS
-     * - POSTMARKAPP_MAIL_FROM_NAME
+     * with sending through the Postmark API
      * 
      * @extends Email
      * @final
@@ -26,6 +22,30 @@
      */
     final class PostmarkEmail extends Email
     {
+        /**
+         * _reference
+         * 
+         * @var    Postmark\Mail
+         * @access protected
+         */
+        protected $_reference;
+
+        /**
+         * __construct
+         * 
+         * @access public
+         * @param  string $apiKey
+         * @param  string $template (default: null) The path to the template
+         *         file, containing markup mixed with standard PHP echos. The
+         *         path specified here must be absolute.
+         * @return void
+         */
+        public function __construct($apiKey, $template = null)
+        {
+            $this->_reference = (new Postmark\Mail($apiKey));
+            parent::__construct($template);
+        }
+
         /**
          * send
          * 
@@ -47,6 +67,8 @@
          * @param  boolean $sendAsHtml (default: true)
          * @param  false|array $from (default: false)
          * @param  boolean|array $attachments (default: false)
+         * @param  boolean|string $account (default: false)
+         * @param  boolean|string $signature (default: false)
          * @return string|Exception
          */
         public function send(
@@ -56,11 +78,10 @@
             $tag = null,
             $sendAsHtml = true,
             $from = false,
-            $attachments = false
+            $attachments = false,
+            $account = false,
+            $signature = false
         ) {
-            // Instance
-            $postmark = (new Postmark\Mail(POSTMARKAPP_API_KEY));
-
             // Recipient
             $email = $to;
             $name = $to;
@@ -68,62 +89,70 @@
                 if (isset($to['email'])) {
                     $email = $to['email'];
                     $name = $to['name'];
-                    $postmark->addTo($email, $name);
+                    $this->_reference->addTo($email, $name);
                 } else {
                     foreach ($to as $address) {
-                        $postmark->addTo($address, $address);
+                        if (isset($address['email'])) {
+                            $this->_reference->addTo(
+                                $address['email'],
+                                $address['to']
+                            );
+                        } else {
+                            $this->_reference->addTo($address, $address);
+                        }
                     }
                 }
             } else {
-                $postmark->addTo($email, $name);
+                $this->_reference->addTo($email, $name);
             }
 
             // Subject
-            $postmark->subject($subject);
+            $this->_reference->subject($subject);
+
+            // Signature lookup
+            $account = ($account === false ? 'default' : $account);
+            $signature = ($signature === false ? 'default' : $signature);
+            $config = \Plugin\Config::retrieve('TurtlePHP-EmailerPlugin');
+            $signature = $config['postmark']['accounts'][$account]['signatures'][$signature];
 
             // Sender
+            $email = $signature['email'];
+            $name = $signature['name'];
             if ($from !== false) {
-                $postmark->from(
-                    $from['email'],
-                    $from['name']
-                );
-            } elseif ($this->_from !== array()) {
-                $postmark->from(
-                    $this->_from['email'],
-                    $this->_from['name']
-                );
-            } else {
-                $postmark->from(
-                    POSTMARKAPP_MAIL_FROM_ADDRESS,
-                    POSTMARKAPP_MAIL_FROM_NAME
-                );
+                if (isset($from['email'])) {
+                    $email = $from['email'];
+                }
+                if (isset($from['name'])) {
+                    $name = $from['name'];
+                }
             }
+            $this->_reference->from($email, $name);
 
             // Attachments
             if ($attachments !== false) {
                 foreach ((array) $attachments as $attachment) {
-                    $postmark->addAttachment($attachment);
+                    $this->_reference->addAttachment($attachment);
                 }
             }
 
             // Body
             if ($sendAsHtml === true) {
-                $postmark->messageHtml($message);
+                $this->_reference->messageHtml($message);
             } else {
-                $postmark->messagePlain($message);
+                $this->_reference->messagePlain($message);
             }
 
             // Email open tracking
-            $postmark->trackOpen();
+            $this->_reference->trackOpen();
 
             // if a tag was specified (native to how Postmark organizes emails)
             if (!is_null($tag)) {
-                $postmark->tag($tag);
+                $this->_reference->tag($tag);
             }
 
             // Send, passing back the messageId
             try {
-                return $postmark->send(array(
+                return $this->_reference->send(array(
                     'returnMessageId' => true
                 ));
             } catch (Exception $exception) {

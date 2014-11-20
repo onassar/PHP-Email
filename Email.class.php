@@ -16,14 +16,6 @@
     class Email
     {
         /**
-         * _from
-         * 
-         * @var    array
-         * @access protected
-         */
-        protected $_from;
-
-        /**
          * _template
          * 
          * The path to the PHP file that ought to be used as a template. Can
@@ -44,13 +36,11 @@
          * @param  string $template (default: null) The path to the template
          *         file, containing markup mixed with standard PHP echos. The
          *         path specified here must be absolute.
-         * @param  array $from (default: array)
          * @return void
          */
-        public function __construct($template = null, $from = array())
+        public function __construct($template = null)
         {
             $this->_template = $template;
-            $this->_from = $from;
         }
 
         /**

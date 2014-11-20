@@ -3,7 +3,7 @@
     // load dependency
     require_once 'Email.class.php';
 
-    // check for <Mail_Postmark> class dependency
+    // check for <Mailgun> class dependency
     if (!class_exists('Mailgun\Mailgun')) {
         throw new Exception('Mailgun SDK not found.');
     }
@@ -23,32 +23,27 @@
     final class MailgunEmail extends Email
     {
         /**
-         * _apiKey
+         * _reference
          * 
-         * @var    string
+         * @var    Mailgun\Mailgun
          * @access protected
          */
-        protected $_apiKey;
+        protected $_reference;
 
         /**
          * __construct
          * 
          * @access public
          * @param  string $apiKey
-         * @param  array $from
          * @param  string $template (default: null) The path to the template
          *         file, containing markup mixed with standard PHP echos. The
          *         path specified here must be absolute.
          * @return void
          */
-        public function __construct(
-            $apiKey,
-            $from,
-            $template = null
-        ) {
-            $this->_apiKey = $apiKey;
-            $this->_reference = (new Mailgun\Mailgun($this->_apiKey));
-            parent::__construct($template, $from);
+        public function __construct($apiKey, $template = null)
+        {
+            $this->_reference = (new Mailgun\Mailgun($apiKey));
+            parent::__construct($template);
         }
 
         /**
@@ -64,10 +59,12 @@
          * @param  string $subject (default: '(test)')
          * @param  string $message (default: '(test)') Ought to be HTML
          * @param  string|null $tag Optional string which "tags" the email for
-         *         further breakdown within the Postmark dashboard
+         *         further breakdown within the Mailgun dashboard
          * @param  boolean $sendAsHtml (default: true)
          * @param  false|array $from (default: false)
          * @param  boolean|array $attachments (default: false)
+         * @param  boolean|string $account (default: false)
+         * @param  boolean|string $signature (default: false)
          * @return string|Exception
          */
         public function send(
@@ -77,10 +74,14 @@
             $tag = null,
             $sendAsHtml = true,
             $from = false,
-            $attachments = false
+            $attachments = false,
+            $account = false,
+            $signature = false
         ) {
-            // Recipient
+            // Data to pass to SDK
             $data = array();
+
+            // Recipient
             $name = $to;
             $email = $to;
             if (is_array($to)) {
@@ -91,7 +92,14 @@
                 } else {
                     $data['to'] = array();
                     foreach ($to as $address) {
-                        $data['to'][] = $address;
+                        if (isset($address['name'])) {
+                            $name = $address['name'];
+                            $email = $address['email'];
+                            $data['to'][] = ($name) . ' <'.  ($email) . '>';
+                        } else {
+                            $data['to'][] = ($address) . ' <'.  ($address) .
+                                '>';
+                        }
                     }
                 }
             } else {
@@ -101,13 +109,24 @@
             // Subject
             $data['subject'] = $subject;
 
+            // Signature lookup
+            $account = ($account === false ? 'default' : $account);
+            $signature = ($signature === false ? 'default' : $signature);
+            $config = \Plugin\Config::retrieve('TurtlePHP-EmailerPlugin');
+            $signature = $config['mailgun']['accounts'][$account]['signatures'][$signature];
+
             // Sender
+            $email = $signature['email'];
+            $name = $signature['name'];
             if ($from !== false) {
-                $data['from'] = ($from['name']) . ' <'.  ($from['email']) . '>';
-            } else {
-                $data['from'] = ($this->_from['name']) . ' <'. 
-                    ($this->_from['email']) . '>';
+                if (isset($from['email'])) {
+                    $email = $from['email'];
+                }
+                if (isset($from['name'])) {
+                    $name = $from['name'];
+                }
             }
+            $data['from'] = ($name) . ' <'.  ($email) . '>';
 
             // Attachments
             $postFiles = array();
@@ -131,7 +150,7 @@
             // Send
             try {
                 $response = $this->_reference->sendMessage(
-                    $this->_from['domain'],
+                    $signature['domain'],
                     $data,
                     $postFiles
                 );
