@@ -133,7 +133,17 @@
             if ($attachments !== false) {
                 $postFiles['attachment'] = array();
                 foreach ((array) $attachments as $attachment) {
-                    array_push($postFiles['attachment'], $attachment);
+                    if (is_array($attachment)) {
+                        array_push(
+                            $postFiles['attachment'],
+                            array(
+                                'filePath' => $attachment['path'],
+                                'remoteName' => $attachment['name']
+                            )
+                        );
+                    } else {
+                        array_push($postFiles['attachment'], $attachment);
+                    }
                 }
             }
 
