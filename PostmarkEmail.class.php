@@ -131,7 +131,18 @@
             // Attachments
             if ($attachments !== false) {
                 foreach ((array) $attachments as $attachment) {
-                    $this->_reference->addAttachment($attachment);
+                    if (is_array($attachment)) {
+                        $this->_reference->addAttachment(
+                            $attachment['path'],
+                            array(
+                                'filenameAlias' => $attachment['name']
+                            )
+                        );
+                    } else {
+                        $this->_reference->addAttachment(
+                            $attachment
+                        );
+                    }
                 }
             }
 
