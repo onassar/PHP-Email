@@ -82,6 +82,9 @@
             $account = false,
             $signature = false
         ) {
+            // Cleanup
+            $this->_reference->reset();
+
             // Recipient
             $email = $to;
             $name = $to;
