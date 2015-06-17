@@ -156,7 +156,7 @@
                 $data['text'] = $message;
             }
 
-            // Open trakcing
+            // Open tracking
             $data['o:tracking'] = $track;
 
             // Send
