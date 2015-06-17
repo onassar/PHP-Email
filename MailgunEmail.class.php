@@ -65,6 +65,7 @@
          * @param  boolean|array $attachments (default: false)
          * @param  boolean|string $account (default: false)
          * @param  boolean|string $signature (default: false)
+         * @param  boolean $track (default: true)
          * @return string|Exception
          */
         public function send(
@@ -76,7 +77,8 @@
             $from = false,
             $attachments = false,
             $account = false,
-            $signature = false
+            $signature = false,
+            $track = true
         ) {
             // Data to pass to SDK
             $data = array();
@@ -155,7 +157,7 @@
             }
 
             // Open trakcing
-            $data['o:tracking'] = true;
+            $data['o:tracking'] = $track;
 
             // Send
             try {

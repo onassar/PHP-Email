@@ -69,6 +69,7 @@
          * @param  boolean|array $attachments (default: false)
          * @param  boolean|string $account (default: false)
          * @param  boolean|string $signature (default: false)
+         * @param  boolean $track (default: true)
          * @return string|Exception
          */
         public function send(
@@ -80,7 +81,8 @@
             $from = false,
             $attachments = false,
             $account = false,
-            $signature = false
+            $signature = false,
+            $track = true
         ) {
             // Cleanup
             $this->_reference->reset();
@@ -157,7 +159,9 @@
             }
 
             // Email open tracking
-            $this->_reference->trackOpen();
+            if ($track === true) {
+                $this->_reference->trackOpen();
+            }
 
             // if a tag was specified (native to how Postmark organizes emails)
             if (!is_null($tag)) {
