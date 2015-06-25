@@ -159,6 +159,11 @@
             // Open tracking
             $data['o:tracking'] = $track;
 
+            // Tagging
+            if (!is_null($tag)) {
+                $data['o:tag'] = array($tag);
+            }
+
             // Send
             try {
                 $response = $this->_reference->sendMessage(

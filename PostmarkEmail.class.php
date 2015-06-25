@@ -158,7 +158,7 @@
                 $this->_reference->messagePlain($message);
             }
 
-            // Email open tracking
+            // Open tracking
             if ($track === true) {
                 $this->_reference->trackOpen();
             }
