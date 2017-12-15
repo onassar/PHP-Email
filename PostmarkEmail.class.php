@@ -14,10 +14,10 @@
      * Extends the email class to provide email generation functionality along
      * with sending through the Postmark API
      * 
-     * @extends Email
      * @final
-     * @see     https://github.com/onassar/PHP-Email
-     * @see     https://github.com/Znarkus/postmark-php
+     * @extends Email
+     * @link    https://github.com/onassar/PHP-Email
+     * @link    https://github.com/Znarkus/postmark-php
      * @author  Oliver Nassar <onassar@gmail.com>
      */
     final class PostmarkEmail extends Email

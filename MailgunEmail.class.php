@@ -14,10 +14,10 @@
      * Extends the email class to provide email generation functionality along
      * with sending through the Mailgun API
      * 
-     * @extends Email
      * @final
-     * @see     https://github.com/onassar/PHP-Email
-     * @see     https://github.com/mailgun/mailgun-php
+     * @extends Email
+     * @link    https://github.com/onassar/PHP-Email
+     * @link    https://github.com/mailgun/mailgun-php
      * @author  Oliver Nassar <onassar@gmail.com>
      */
     final class MailgunEmail extends Email

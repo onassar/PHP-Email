@@ -10,7 +10,7 @@
      * Does not manage sending of mail. For that an external mailer (like
      * Postmark) should be used.
      * 
-     * @see     https://github.com/onassar/PHP-Email
+     * @link    https://github.com/onassar/PHP-Email
      * @author  Oliver Nassar <onassar@gmail.com>
      */
     class Email
