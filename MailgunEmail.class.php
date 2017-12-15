@@ -4,7 +4,7 @@
     require_once 'Email.class.php';
 
     // check for <Mailgun> class dependency
-    if (!class_exists('Mailgun\Mailgun')) {
+    if (class_exists('Mailgun\Mailgun') === false) {
         throw new Exception('Mailgun SDK not found.');
     }
 
@@ -16,7 +16,7 @@
      * 
      * @extends Email
      * @final
-     * @source  https://github.com/onassar/PHP-Email
+     * @see     https://github.com/onassar/PHP-Email
      * @see     https://github.com/mailgun/mailgun-php
      * @author  Oliver Nassar <onassar@gmail.com>
      */
@@ -25,20 +25,20 @@
         /**
          * _reference
          * 
-         * @var    Mailgun\Mailgun
-         * @access protected
+         * @var     Mailgun\Mailgun
+         * @access  protected
          */
         protected $_reference;
 
         /**
          * __construct
          * 
-         * @access public
-         * @param  string $apiKey
-         * @param  string $template (default: null) The path to the template
-         *         file, containing markup mixed with standard PHP echos. The
-         *         path specified here must be absolute.
-         * @return void
+         * @access  public
+         * @param   string $apiKey
+         * @param   string $template (default: null) The path to the template
+         *          file, containing markup mixed with standard PHP echos. The
+         *          path specified here must be absolute.
+         * @return  void
          */
         public function __construct($apiKey, $template = null)
         {
@@ -51,22 +51,22 @@
          * 
          * Uses the Mailgun service to send a piece of mail
          * 
-         * @access public
-         * @param  string|array $to Email of the recipient, or
-         *         associatively-keyed (with keys <address> and <name>) array
-         *         with recipient details. In my experience, the address is
-         *         enough
-         * @param  string $subject (default: '(test)')
-         * @param  string $message (default: '(test)') Ought to be HTML
-         * @param  string|null $tag Optional string which "tags" the email for
-         *         further breakdown within the Mailgun dashboard
-         * @param  boolean $sendAsHtml (default: true)
-         * @param  false|array $from (default: false)
-         * @param  boolean|array $attachments (default: false)
-         * @param  boolean|string $account (default: false)
-         * @param  boolean|string $signature (default: false)
-         * @param  boolean $track (default: true)
-         * @return string|Exception
+         * @access  public
+         * @param   string|array $to Email of the recipient, or
+         *          associatively-keyed (with keys <address> and <name>) array
+         *          with recipient details. In my experience, the address is
+         *          enough
+         * @param   string $subject (default: '(test)')
+         * @param   string $message (default: '(test)') Ought to be HTML
+         * @param   string|null $tag Optional string which "tags" the email for
+         *          further breakdown within the Mailgun dashboard
+         * @param   boolean $sendAsHtml (default: true)
+         * @param   false|array $from (default: false)
+         * @param   boolean|array $attachments (default: false)
+         * @param   boolean|string $account (default: false)
+         * @param   boolean|string $signature (default: false)
+         * @param   boolean $track (default: true)
+         * @return  string|Exception
          */
         public function send(
             $to,
@@ -86,15 +86,15 @@
             // Recipient
             $name = $to;
             $email = $to;
-            if (is_array($to)) {
-                if (isset($to['name'])) {
+            if (is_array($to) === true) {
+                if (isset($to['name']) === true) {
                     $name = $to['name'];
                     $email = $to['email'];
                     $data['to'] = ($name) . ' <'.  ($email) . '>';
                 } else {
                     $data['to'] = array();
                     foreach ($to as $address) {
-                        if (isset($address['name'])) {
+                        if (isset($address['name']) === true) {
                             $name = $address['name'];
                             $email = $address['email'];
                             $data['to'][] = ($name) . ' <'.  ($email) . '>';
@@ -135,7 +135,7 @@
             if ($attachments !== false) {
                 $postFiles['attachment'] = array();
                 foreach ((array) $attachments as $attachment) {
-                    if (is_array($attachment)) {
+                    if (is_array($attachment) === true) {
                         array_push(
                             $postFiles['attachment'],
                             array(
@@ -160,7 +160,7 @@
             $data['o:tracking'] = $track;
 
             // Tagging
-            if (!is_null($tag)) {
+            if (is_null($tag) === false) {
                 $data['o:tag'] = array($tag);
             }
 

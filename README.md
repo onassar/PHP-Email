@@ -51,7 +51,7 @@ that, you can use the `PostmarkEmail` class, or another third party service
     ));
 
     // postmark
-    require_once APP . '/vendors/postmark-php/Postmark.php';
+    require_once APP . '/vendors/postmark-php/v0.5/Postmark.php';
     define('POSTMARKAPP_API_KEY', '***');
     define('POSTMARKAPP_MAIL_FROM_ADDRESS', 'onassar@gmail.com');
     define('POSTMARKAPP_MAIL_FROM_NAME', 'Oliver Nassar');
@@ -72,7 +72,7 @@ that, you can use the `PostmarkEmail` class, or another third party service
 <?php
 
     // Postmark SDK loading
-    require_once APP . '/vendors/postmark-php/Postmark.php';
+    require_once APP . '/vendors/postmark-php/v0.5/Postmark.php';
 
     // Postmark constants
     define('POSTMARKAPP_API_KEY', 'fb2e27a8-aa1a-4c91-828c-0c06067e82f6');

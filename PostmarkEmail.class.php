@@ -4,7 +4,7 @@
     require_once 'Email.class.php';
 
     // check for <Mail_Postmark> class dependency
-    if (!class_exists('Postmark\Mail')) {
+    if (class_exists('Postmark\Mail') === false) {
         throw new Exception('Postmark SDK not found.');
     }
 
@@ -16,7 +16,7 @@
      * 
      * @extends Email
      * @final
-     * @source  https://github.com/onassar/PHP-Email
+     * @see     https://github.com/onassar/PHP-Email
      * @see     https://github.com/Znarkus/postmark-php
      * @author  Oliver Nassar <onassar@gmail.com>
      */
@@ -25,20 +25,20 @@
         /**
          * _reference
          * 
-         * @var    Postmark\Mail
-         * @access protected
+         * @var     Postmark\Mail
+         * @access  protected
          */
         protected $_reference;
 
         /**
          * __construct
          * 
-         * @access public
-         * @param  string $apiKey
-         * @param  string $template (default: null) The path to the template
-         *         file, containing markup mixed with standard PHP echos. The
-         *         path specified here must be absolute.
-         * @return void
+         * @access  public
+         * @param   string $apiKey
+         * @param   string $template (default: null) The path to the template
+         *          file, containing markup mixed with standard PHP echos. The
+         *          path specified here must be absolute.
+         * @return  void
          */
         public function __construct($apiKey, $template = null)
         {
@@ -52,25 +52,26 @@
          * Uses the Postmark service (and preset constants) to send a piece of
          * mail.
          * 
-         * @notes  If sending out compious amounts of mail, static usage may be
-         *         preferred, as it may be more memory-conscious. See 
-         *         https://github.com/Znarkus/postmark-php for more information.
-         * @access public
-         * @param  string|array $to Email of the recipient, or
-         *         associatively-keyed (with keys <email> and <name>) array
-         *         with recipient details. In my experience, the email is
-         *         enough
-         * @param  string $subject (default: '(test)')
-         * @param  string $message (default: '(test)') Ought to be HTML
-         * @param  string|null $tag Optional string which "tags" the email for
-         *         further breakdown within the Postmark dashboard
-         * @param  boolean $sendAsHtml (default: true)
-         * @param  false|array $from (default: false)
-         * @param  boolean|array $attachments (default: false)
-         * @param  boolean|string $account (default: false)
-         * @param  boolean|string $signature (default: false)
-         * @param  boolean $track (default: true)
-         * @return string|Exception
+         * @note    If sending out compious amounts of mail, static usage may be
+         *          preferred, as it may be more memory-conscious. See 
+         *          https://github.com/Znarkus/postmark-php for more
+         *          information.
+         * @access  public
+         * @param   string|array $to Email of the recipient, or
+         *          associatively-keyed (with keys <email> and <name>) array
+         *          with recipient details. In my experience, the email is
+         *          enough
+         * @param   string $subject (default: '(test)')
+         * @param   string $message (default: '(test)') Ought to be HTML
+         * @param   string|null $tag Optional string which "tags" the email for
+         *          further breakdown within the Postmark dashboard
+         * @param   boolean $sendAsHtml (default: true)
+         * @param   false|array $from (default: false)
+         * @param   boolean|array $attachments (default: false)
+         * @param   boolean|string $account (default: false)
+         * @param   boolean|string $signature (default: false)
+         * @param   boolean $track (default: true)
+         * @return  string|Exception
          */
         public function send(
             $to,
@@ -90,14 +91,14 @@
             // Recipient
             $email = $to;
             $name = $to;
-            if (is_array($to)) {
-                if (isset($to['email'])) {
+            if (is_array($to) === true) {
+                if (isset($to['email']) === true) {
                     $email = $to['email'];
                     $name = $to['name'];
                     $this->_reference->addTo($email, $name);
                 } else {
                     foreach ($to as $address) {
-                        if (isset($address['email'])) {
+                        if (isset($address['email']) === true) {
                             $this->_reference->addTo(
                                 $address['email'],
                                 $address['to']
@@ -124,10 +125,10 @@
             $email = $signature['email'];
             $name = $signature['name'];
             if ($from !== false) {
-                if (isset($from['email'])) {
+                if (isset($from['email']) === true) {
                     $email = $from['email'];
                 }
-                if (isset($from['name'])) {
+                if (isset($from['name']) === true) {
                     $name = $from['name'];
                 }
             }
@@ -136,7 +137,7 @@
             // Attachments
             if ($attachments !== false) {
                 foreach ((array) $attachments as $attachment) {
-                    if (is_array($attachment)) {
+                    if (is_array($attachment) === true) {
                         $this->_reference->addAttachment(
                             $attachment['path'],
                             array(
@@ -164,7 +165,7 @@
             }
 
             // if a tag was specified (native to how Postmark organizes emails)
-            if (!is_null($tag)) {
+            if (is_null($tag) === false) {
                 $this->_reference->tag($tag);
             }
 

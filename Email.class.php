@@ -10,8 +10,8 @@
      * Does not manage sending of mail. For that an external mailer (like
      * Postmark) should be used.
      * 
-     * @source https://github.com/onassar/PHP-Email
-     * @author Oliver Nassar <onassar@gmail.com>
+     * @see     https://github.com/onassar/PHP-Email
+     * @author  Oliver Nassar <onassar@gmail.com>
      */
     class Email
     {
@@ -22,8 +22,8 @@
          * contain native PHP, and make use of variables passed into the
          * <render> method as well as in the <$GLOBALS> array.
          * 
-         * @var    string
-         * @access protected
+         * @var     string
+         * @access  protected
          */
         protected $_template;
 
@@ -32,11 +32,11 @@
          * 
          * Sets the path to the template, for use by the <render> method.
          * 
-         * @access public
-         * @param  string $template (default: null) The path to the template
-         *         file, containing markup mixed with standard PHP echos. The
-         *         path specified here must be absolute.
-         * @return void
+         * @access  public
+         * @param   string $template (default: null) The path to the template
+         *          file, containing markup mixed with standard PHP echos. The
+         *          path specified here must be absolute.
+         * @return  void
          */
         public function __construct($template = null)
         {
@@ -49,9 +49,9 @@
          * Accepts array-argument of associatively-keyed values to accomodate
          * the rendering of the template set in the constructor.
          * 
-         * @access public
-         * @param  array $__data
-         * @return string
+         * @access  public
+         * @param   array $__data
+         * @return  string
          */
         public function render(array $__data = array())
         {
