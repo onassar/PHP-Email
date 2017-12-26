@@ -42,7 +42,7 @@
          */
         public function __construct($apiKey, $template = null)
         {
-            $this->_reference = (new Mailgun\Mailgun($apiKey));
+            $this->_reference = new Mailgun\Mailgun($apiKey);
             parent::__construct($template);
         }
 

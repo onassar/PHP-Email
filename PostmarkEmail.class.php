@@ -42,7 +42,7 @@
          */
         public function __construct($apiKey, $template = null)
         {
-            $this->_reference = (new Postmark\Mail($apiKey));
+            $this->_reference = new Postmark\Mail($apiKey);
             parent::__construct($template);
         }
 
