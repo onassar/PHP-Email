@@ -25,8 +25,8 @@
         /**
          * _reference
          * 
-         * @var     Mailgun\Mailgun
          * @access  protected
+         * @var     Mailgun\Mailgun
          */
         protected $_reference;
 
@@ -60,12 +60,12 @@
          * @param   string $message (default: '(test)') Ought to be HTML
          * @param   string|null $tag Optional string which "tags" the email for
          *          further breakdown within the Mailgun dashboard
-         * @param   boolean $sendAsHtml (default: true)
+         * @param   bool $sendAsHtml (default: true)
          * @param   false|array $from (default: false)
-         * @param   boolean|array $attachments (default: false)
-         * @param   boolean|string $account (default: false)
-         * @param   boolean|string $signature (default: false)
-         * @param   boolean $track (default: true)
+         * @param   bool|array $attachments (default: false)
+         * @param   bool|string $account (default: false)
+         * @param   bool|string $signature (default: false)
+         * @param   bool $track (default: true)
          * @return  string|Exception
          */
         public function send(

@@ -22,8 +22,8 @@
          * contain native PHP, and make use of variables passed into the
          * <render> method as well as in the <$GLOBALS> array.
          * 
-         * @var     string
          * @access  protected
+         * @var     string
          */
         protected $_template;
 
