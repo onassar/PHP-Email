@@ -1,181 +1,232 @@
 <?php
 
-    // load dependency
-    require_once 'Email.class.php';
-
-    // check for <Mail_Postmark> class dependency
-    if (class_exists('Postmark\Mail') === false) {
-        throw new Exception('Postmark SDK not found.');
-    }
+    // Namespace
+    namespace Email;
 
     /**
      * PostmarkEmail
      * 
-     * Extends the email class to provide email generation functionality along
-     * with sending through the Postmark API
-     * 
      * @final
-     * @extends Email
+     * @extends OutboundEmail
      * @link    https://github.com/onassar/PHP-Email
      * @link    https://github.com/Znarkus/postmark-php
      * @author  Oliver Nassar <onassar@gmail.com>
      */
-    final class PostmarkEmail extends Email
+    final class PostmarkEmail extends OutboundEmail
     {
-        /**
-         * _reference
-         * 
-         * @access  protected
-         * @var     Postmark\Mail
-         */
-        protected $_reference;
-
         /**
          * __construct
          * 
          * @access  public
-         * @param   string $apiKey
-         * @param   string $template (default: null) The path to the template
-         *          file, containing markup mixed with standard PHP echos. The
-         *          path specified here must be absolute.
          * @return  void
          */
-        public function __construct($apiKey, $template = null)
+        public function __construct()
         {
-            $this->_reference = new Postmark\Mail($apiKey);
-            parent::__construct($template);
+            $this->_checkForDependencies();
+            $this->_buildClient();
+        }
+
+        /**
+         * _buildClient
+         * 
+         * @access  protected
+         * @return  void
+         */
+        protected function _buildClient(): void
+        {
+            $apiKey = PostmarkUtils::getAPIKey();
+            $client = new \Postmark\Mail($apiKey);
+            $this->_client = $client;
+        }
+
+        /**
+         * _checkForDependencies
+         * 
+         * @throws  Exception
+         * @access  protected
+         * @return  bool
+         */
+        protected function _checkForDependencies(): bool
+        {
+            if (class_exists('Postmark\Mail') === true) {
+                return true;
+            }
+            $msg = 'Postmark SDK not found.';
+            throw new \Exception($msg);
+        }
+
+        /**
+         * _attemptClientSend
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _attemptClientSend(): bool
+        {
+            $client = $this->_client;
+            $returnMessageId = true;
+            $properties = compact('returnMessageId');
+            try {
+                $response = $client->send($properties);
+                $this->_sendId = $response;
+                return true;
+            } catch (\Exception $exception) {
+                $this->_lastException = $exception;
+                return false;
+            }
+        }
+
+        /**
+         * _getOutboundSignatures
+         * 
+         * @access  protected
+         * @return  array
+         */
+        protected function _getOutboundSignatures(): array
+        {
+            $outboundSignatures = PostmarkUtils::getOutboundSignatures();
+            return $outboundSignatures;
+        }
+
+        /**
+         * _setClientAttachments
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientAttachments(): bool
+        {
+            $attachments = $this->_attachments;
+            $client = $this->_client;
+            foreach ($attachments as $attachment) {
+                $path = $attachment['path'];
+                $filenameAlias = $attachment['basename'];
+                $properties = compact('filenameAlias');
+                $client->addAttachment($path, $properties);
+            }
+            return true;
+        }
+
+        /**
+         * _setClientBody
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientBody(): bool
+        {
+            $html = $this->_html;
+            $client = $this->_client;
+            $body = $this->_body;
+            if ($html === true) {
+                $client->messageHtml($body);
+                return true;
+            }
+            $client->messagePlain($body);
+            return true;
+        }
+
+        /**
+         * _setClientFrom
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientFrom(): bool
+        {
+            $client = $this->_client;
+            $signature = $this->_getOutboundSignature();
+            $email = $signature['email'];
+            $address = $email['address'];
+            $name = $email['name'];
+            $client->from($address, $name);
+            return true;
+        }
+
+        /**
+         * _setClientSubject
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientSubject(): bool
+        {
+            $client = $this->_client;
+            $subject = $this->_subject;
+            $client->subject($subject);
+            return true;
+        }
+
+        /**
+         * _setClientTags
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientTags(): bool
+        {
+            $tags = $this->_tags;
+            if (empty($tags) === true) {
+                return false;
+            }
+            $client = $this->_client;
+            foreach ($tags as $tag) {
+                $client->tag($tag);
+            }
+            return true;
+        }
+
+        /**
+         * _setClientToRecipients
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientToRecipients(): bool
+        {
+            $client = $this->_client;
+            $toRecipients = $this->_toRecipients;
+            foreach ($toRecipients as $toRecipient) {
+                $address = $toRecipient['address'];
+                $name = $toRecipient['name'];
+                $client->addTo($address, $name);
+            }
+            return true;
+        }
+
+        /**
+         * _setClientTracking
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientTracking(): bool
+        {
+            $tracking = $this->_tracking;
+            if ($tracking === false) {
+                return false;
+            }
+            $client = $this->_client;
+            $client->trackOpen();
+            return true;
         }
 
         /**
          * send
          * 
-         * Uses the Postmark service (and preset constants) to send a piece of
-         * mail.
-         * 
-         * @note    If sending out compious amounts of mail, static usage may be
-         *          preferred, as it may be more memory-conscious. See 
-         *          https://github.com/Znarkus/postmark-php for more
-         *          information.
          * @access  public
-         * @param   string|array $to Email of the recipient, or
-         *          associatively-keyed (with keys <email> and <name>) array
-         *          with recipient details. In my experience, the email is
-         *          enough
-         * @param   string $subject (default: '(test)')
-         * @param   string $message (default: '(test)') Ought to be HTML
-         * @param   string|null $tag Optional string which "tags" the email for
-         *          further breakdown within the Postmark dashboard
-         * @param   bool $sendAsHtml (default: true)
-         * @param   false|array $from (default: false)
-         * @param   bool|array $attachments (default: false)
-         * @param   bool|string $account (default: false)
-         * @param   bool|string $signature (default: false)
-         * @param   bool $track (default: true)
-         * @return  string|Exception
+         * @return  bool
          */
-        public function send(
-            $to,
-            $subject = '(test)',
-            $message = '(test)',
-            $tag = null,
-            $sendAsHtml = true,
-            $from = false,
-            $attachments = false,
-            $account = false,
-            $signature = false,
-            $track = true
-        ) {
-            // Cleanup
-            $this->_reference->reset();
-
-            // Recipient
-            $email = $to;
-            $name = $to;
-            if (is_array($to) === true) {
-                if (isset($to['email']) === true) {
-                    $email = $to['email'];
-                    $name = $to['name'];
-                    $this->_reference->addTo($email, $name);
-                } else {
-                    foreach ($to as $address) {
-                        if (isset($address['email']) === true) {
-                            $this->_reference->addTo(
-                                $address['email'],
-                                $address['to']
-                            );
-                        } else {
-                            $this->_reference->addTo($address, $address);
-                        }
-                    }
-                }
-            } else {
-                $this->_reference->addTo($email, $name);
-            }
-
-            // Subject
-            $this->_reference->subject($subject);
-
-            // Signature lookup
-            $account = ($account === false ? 'default' : $account);
-            $signature = ($signature === false ? 'default' : $signature);
-            $config = \Plugin\Config::retrieve('TurtlePHP-EmailerPlugin');
-            $signature = $config['postmark']['accounts'][$account]['signatures'][$signature];
-
-            // Sender
-            $email = $signature['email'];
-            $name = $signature['name'];
-            if ($from !== false) {
-                if (isset($from['email']) === true) {
-                    $email = $from['email'];
-                }
-                if (isset($from['name']) === true) {
-                    $name = $from['name'];
-                }
-            }
-            $this->_reference->from($email, $name);
-
-            // Attachments
-            if ($attachments !== false) {
-                foreach ((array) $attachments as $attachment) {
-                    if (is_array($attachment) === true) {
-                        $this->_reference->addAttachment(
-                            $attachment['path'],
-                            array(
-                                'filenameAlias' => $attachment['name']
-                            )
-                        );
-                    } else {
-                        $this->_reference->addAttachment(
-                            $attachment
-                        );
-                    }
-                }
-            }
-
-            // Body
-            if ($sendAsHtml === true) {
-                $this->_reference->messageHtml($message);
-            } else {
-                $this->_reference->messagePlain($message);
-            }
-
-            // Open tracking
-            if ($track === true) {
-                $this->_reference->trackOpen();
-            }
-
-            // if a tag was specified (native to how Postmark organizes emails)
-            if (is_null($tag) === false) {
-                $this->_reference->tag($tag);
-            }
-
-            // Send, passing back the messageId
-            try {
-                return $this->_reference->send(array(
-                    'returnMessageId' => true
-                ));
-            } catch (Exception $exception) {
-                return new Exception($exception->getMessage());
-            }
+        public function send(): bool
+        {
+            $this->_setClientAttachments();
+            $this->_setClientBody();
+            $this->_setClientFrom();
+            $this->_setClientSubject();
+            $this->_setClientTags();
+            $this->_setClientToRecipients();
+            $this->_setClientTracking();
+            $successful = $this->_attemptClientSend();
+            return $successful;
         }
     }
