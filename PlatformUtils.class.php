@@ -165,7 +165,7 @@
          * @param   null|bool $sendEmails
          * @return  bool
          */
-        public static function setSendEmails(?string $sendEmails): bool
+        public static function setSendEmails(?bool $sendEmails): bool
         {
             if ($sendEmails === null) {
                 return false;

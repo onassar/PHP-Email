@@ -107,6 +107,8 @@
          */
         public function __construct()
         {
+            $this->_checkForDependencies();
+            $this->_buildClient();
         }
 
         /**

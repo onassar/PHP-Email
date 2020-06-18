@@ -39,8 +39,6 @@
         public function __construct()
         {
             parent::__construct();
-            $this->_checkForDependencies();
-            $this->_buildClient();
         }
 
         /**
