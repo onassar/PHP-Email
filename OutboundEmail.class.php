@@ -110,26 +110,6 @@
         }
 
         /**
-         * _validSendAttempt
-         * 
-         * @access  protected
-         * @return  bool
-         */
-        protected function _validSendAttempt(): bool
-        {
-            $sendEmails = $this->_getSendEmails();
-            if ($sendEmails === true) {
-                return true;
-            }
-            $this->_whitelistBasedToRecipientsFiltering();
-            $toRecipients = $this->_toRecipients;
-            if (count($toRecipients) === 0) {
-                return false;
-            }
-            return true;
-        }
-
-        /**
          * _getOutboundSignature
          * 
          * @access  protected
@@ -157,6 +137,26 @@
                 return true;
             }
             return false;
+        }
+
+        /**
+         * _validSendAttempt
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _validSendAttempt(): bool
+        {
+            $sendEmails = $this->_getSendEmails();
+            if ($sendEmails === true) {
+                return true;
+            }
+            $this->_whitelistBasedToRecipientsFiltering();
+            $toRecipients = $this->_toRecipients;
+            if (count($toRecipients) === 0) {
+                return false;
+            }
+            return true;
         }
 
         /**
