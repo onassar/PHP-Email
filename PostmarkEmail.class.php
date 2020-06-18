@@ -22,6 +22,7 @@
          */
         public function __construct()
         {
+            parent::__construct();
             $this->_checkForDependencies();
             $this->_buildClient();
         }
@@ -86,6 +87,30 @@
         {
             $outboundSignatures = PostmarkUtils::getOutboundSignatures();
             return $outboundSignatures;
+        }
+
+        /**
+         * _getRecipientWhitelistPatterns
+         * 
+         * @access  protected
+         * @return  array
+         */
+        protected function _getRecipientWhitelistPatterns(): array
+        {
+            $recipientWhitelistPatterns = PostmarkUtils::getRecipientWhitelistPatterns();
+            return $recipientWhitelistPatterns;
+        }
+
+        /**
+         * _getSendEmails
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _getSendEmails(): bool
+        {
+            $sendEmails = PostmarkUtils::getSendEmails();
+            return $sendEmails;
         }
 
         /**
@@ -219,6 +244,10 @@
          */
         public function send(): bool
         {
+            $validSendAttempt = $this->_validSendAttempt();
+            if ($validSendAttempt === false) {
+                return false;
+            }
             $this->_setClientAttachments();
             $this->_setClientBody();
             $this->_setClientFrom();

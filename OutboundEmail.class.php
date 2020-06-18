@@ -110,6 +110,26 @@
         }
 
         /**
+         * _validSendAttempt
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _validSendAttempt(): bool
+        {
+            $sendEmails = $this->_getSendEmails();
+            if ($sendEmails === true) {
+                return true;
+            }
+            $this->_whitelistBasedToRecipientsFiltering();
+            $toRecipients = $this->_toRecipients;
+            if (count($toRecipients) === 0) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
          * _getOutboundSignature
          * 
          * @access  protected
@@ -121,6 +141,53 @@
             $outboundSignatures = $this->_getOutboundSignatures();
             $outboundSignature = $outboundSignatures[$outboundSignatureKey];
             return $outboundSignature;
+        }
+
+        /**
+         * _patternMatches
+         * 
+         * @access  protected
+         * @param   string $pattern
+         * @param   string $str
+         * @return  bool
+         */
+        protected function _patternMatches(string $pattern, string $str): bool
+        {
+            if (@preg_match($pattern, $str) === 1) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * _whitelistBasedToRecipientsFiltering
+         * 
+         * @see     https://stackoverflow.com/questions/7558022/php-reindex-array
+         * @access  protected
+         * @return  bool
+         */
+        protected function _whitelistBasedToRecipientsFiltering(): bool
+        {
+            $toRecipients = $this->_toRecipients;
+            $recipientWhitelistPatterns = $this->_getRecipientWhitelistPatterns();
+            foreach ($toRecipients as $index => $recipient) {
+                $address = $recipient['address'];
+                $matches = false;
+                foreach ($recipientWhitelistPatterns as $pattern) {
+                    $args = array($pattern, $address);
+                    $patternMatches = $this->_patternMatches(... $args);
+                    if ($patternMatches === true) {
+                        $matches = true;
+                        break;
+                    }
+                }
+                if ($matches === false) {
+                    unset($toRecipients[$index]);
+                }
+            }
+            $toRecipients = array_values($toRecipients);
+            $this->_toRecipients = $toRecipients;
+            return true;
         }
 
         /**

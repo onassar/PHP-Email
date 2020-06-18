@@ -21,15 +21,6 @@
         protected static $_apiKey = null;
 
         /**
-         * _fallbackRecipient
-         * 
-         * @access  protected
-         * @var     null|string (default: null)
-         * @static
-         */
-        protected static $_fallbackRecipient = null;
-
-        /**
          * _outboundSignatures
          * 
          * @access  protected
@@ -46,6 +37,15 @@
          * @static
          */
         protected static $_recipientWhitelistPatterns = array();
+
+        /**
+         * _sendEmails
+         * 
+         * @access  protected
+         * @var     bool (default: true)
+         * @static
+         */
+        protected static $_sendEmails = true;
 
         /**
          * addOutboundSignature
@@ -132,19 +132,45 @@
         }
 
         /**
-         * setFallbackRecipient
+         * getRecipientWhitelistPatterns
          * 
          * @access  public
          * @static
-         * @param   null|string $fallbackRecipient
+         * @return  array
+         */
+        public static function getRecipientWhitelistPatterns(): array
+        {
+            $recipientWhitelistPatterns = static::$_recipientWhitelistPatterns;
+            return $recipientWhitelistPatterns;
+        }
+
+        /**
+         * getSendEmails
+         * 
+         * @access  public
+         * @static
          * @return  bool
          */
-        public static function setFallbackRecipient(?string $fallbackRecipient): bool
+        public static function getSendEmails(): bool
         {
-            if ($fallbackRecipient === null) {
+            $sendEmails = static::$_sendEmails;
+            return $sendEmails;
+        }
+
+        /**
+         * setSendEmails
+         * 
+         * @access  public
+         * @static
+         * @param   null|bool $sendEmails
+         * @return  bool
+         */
+        public static function setSendEmails(?string $sendEmails): bool
+        {
+            if ($sendEmails === null) {
                 return false;
             }
-            static::$_fallbackRecipient = $fallbackRecipient;
+            static::$_sendEmails = $sendEmails;
             return true;
         }
 

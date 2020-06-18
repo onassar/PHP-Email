@@ -22,7 +22,6 @@ Currently limited to Mailgun and Postmark.
     Email\MailgunUtils::addOutboundSignatures($signatures);
     Email\MailgunUtils::addRecipientWhitelistPatterns($patterns);
     Email\MailgunUtils::setAPIKey($apiKey);
-    Email\MailgunUtils::setFallbackRecipient($emailAddress);
 
     // send
     $email = new Email\MailgunEmail();
@@ -50,7 +49,6 @@ Currently limited to Mailgun and Postmark.
     Email\PostmarkUtils::addOutboundSignatures($signatures);
     Email\PostmarkUtils::addRecipientWhitelistPatterns($patterns);
     Email\PostmarkUtils::setAPIKey($apiKey);
-    Email\PostmarkUtils::setFallbackRecipient($emailAddress);
 
     // send
     $email = new Email\PostmarkEmail();
