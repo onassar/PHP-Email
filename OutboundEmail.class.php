@@ -28,6 +28,14 @@
         protected $_body = null;
 
         /**
+         * _bodyPath
+         * 
+         * @access  protected
+         * @var     null|string (default: null)
+         */
+        protected $_bodyPath = null;
+
+        /**
          * _client
          * 
          * @access  protected
@@ -109,6 +117,27 @@
         {
             $this->_checkForDependencies();
             $this->_buildClient();
+        }
+
+        /**
+         * _getBody
+         * 
+         * @access  protected
+         * @return  null|string
+         */
+        protected function _getBody(): ?string
+        {
+            $body = $this->_body;
+            if ($body !== null) {
+                return $body;
+            }
+            $bodyPath = $this->_bodyPath;
+            if ($bodyPath !== null) {
+                $body = file_get_contents($bodyPath);
+                return $body;
+            }
+            $body = null;
+            return $body;
         }
 
         /**
@@ -295,6 +324,22 @@
                 return false;
             }
             $this->_body = $body;
+            return true;
+        }
+
+        /**
+         * setBodyPath
+         * 
+         * @access  public
+         * @param   null|string $bodyPath
+         * @return  bool
+         */
+        public function setBodyPath(?string $bodyPath): bool
+        {
+            if ($bodyPath === null) {
+                return false;
+            }
+            $this->_bodyPath = $bodyPath;
             return true;
         }
 

@@ -138,9 +138,12 @@
          */
         protected function _setClientBody(): bool
         {
+            $body = $this->_getBody();
+            if ($body === null) {
+                return false;
+            }
             $html = $this->_html;
             $client = $this->_client;
-            $body = $this->_body;
             if ($html === true) {
                 $client->messageHtml($body);
                 return true;
@@ -183,6 +186,8 @@
         /**
          * _setClientTags
          * 
+         * @note    Postmark SDK is currently limited to one tag per email. So
+         *          I break after the initial tag is added.
          * @access  protected
          * @return  bool
          */
@@ -195,6 +200,7 @@
             $client = $this->_client;
             foreach ($tags as $tag) {
                 $client->tag($tag);
+                break;
             }
             return true;
         }

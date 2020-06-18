@@ -192,8 +192,11 @@
          */
         protected function _setClientBody(): bool
         {
+            $body = $this->_getBody();
+            if ($body === null) {
+                return false;
+            }
             $html = $this->_html;
-            $body = $this->_body;
             if ($html === true) {
                 $this->_clientSendData['html'] = $body;
                 return true;
