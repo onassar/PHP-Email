@@ -25,7 +25,7 @@ Currently limited to Mailgun and Postmark.
 
     // send
     $email = new Email\MailgunEmail();
-    $email->addTo($emailAddress);
+    $email->addTo($address);
     $email->setSubject($subject);
     $email->setBody($body);
     $success = $email->send();
@@ -52,7 +52,7 @@ Currently limited to Mailgun and Postmark.
 
     // send
     $email = new Email\PostmarkEmail();
-    $email->addTo($emailAddress);
+    $email->addTo($address);
     $email->setSubject($subject);
     $email->setBody($body);
     $success = $email->send();
