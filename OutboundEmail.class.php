@@ -206,6 +206,23 @@
         }
 
         /**
+         * addAttachments
+         * 
+         * @access  public
+         * @param   array $attachments
+         * @return  bool
+         */
+        public function addAttachments(array $attachments): bool
+        {
+            foreach ($attachments as $attachment) {
+                $basename = $attachment['basename'];
+                $path = $attachment['path'];
+                $this->addAttachment($basename, $path);
+            }
+            return true;
+        }
+
+        /**
          * addTag
          * 
          * @access  public
