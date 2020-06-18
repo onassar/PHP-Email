@@ -176,9 +176,9 @@
          * getLastException
          * 
          * @access  public
-         * @return  null|Exception
+         * @return  null|\Exception
          */
-        public function getLastException(): ?Exception
+        public function getLastException(): ?\Exception
         {
             $lastException = $this->_lastException;
             return $lastException;
