@@ -41,7 +41,7 @@
         /**
          * _checkForDependencies
          * 
-         * @throws  Exception
+         * @throws  \Exception
          * @access  protected
          * @return  bool
          */
