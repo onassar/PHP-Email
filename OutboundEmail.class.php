@@ -282,8 +282,8 @@
             if ($address === null) {
                 return false;
             }
-            $email = compact('address', 'name');
-            array_push($this->_toRecipients, $email);
+            $recipient = compact('address', 'name');
+            array_push($this->_toRecipients, $recipient);
             return true;
         }
 

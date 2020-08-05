@@ -213,8 +213,8 @@
          */
         protected function _setClientToRecipients(): bool
         {
-            $client = $this->_client;
             $toRecipients = $this->_toRecipients;
+            $client = $this->_client;
             foreach ($toRecipients as $toRecipient) {
                 $address = $toRecipient['address'];
                 $name = $toRecipient['name'];
