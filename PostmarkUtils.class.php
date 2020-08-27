@@ -1,7 +1,7 @@
 <?php
 
-    // Namespace
-    namespace Email;
+    // Namespace overhead
+    namespace onassar\Email;
 
     /**
      * PostmarkUtils
