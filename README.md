@@ -19,12 +19,12 @@ Currently limited to Mailgun and Postmark.
     require_once APP . '/vendors/submodules/PHP-Email/MailgunEmail.class.php';
     
     // setup
-    Email\MailgunUtils::addOutboundSignatures($signatures);
-    Email\MailgunUtils::addRecipientWhitelistPatterns($patterns);
-    Email\MailgunUtils::setAPIKey($apiKey);
+    onassar\Email\MailgunUtils::addOutboundSignatures($signatures);
+    onassar\Email\MailgunUtils::addRecipientWhitelistPatterns($patterns);
+    onassar\Email\MailgunUtils::setAPIKey($apiKey);
 
     // send
-    $email = new Email\MailgunEmail();
+    $email = new onassar\Email\MailgunEmail();
     $email->addToRecipient($address);
     $email->setSubject($subject);
     $email->setBody($body);
@@ -46,12 +46,12 @@ Currently limited to Mailgun and Postmark.
     require_once APP . '/vendors/submodules/PHP-Email/PostmarkEmail.class.php';
     
     // setup
-    Email\PostmarkUtils::addOutboundSignatures($signatures);
-    Email\PostmarkUtils::addRecipientWhitelistPatterns($patterns);
-    Email\PostmarkUtils::setAPIKey($apiKey);
+    onassar\Email\PostmarkUtils::addOutboundSignatures($signatures);
+    onassar\Email\PostmarkUtils::addRecipientWhitelistPatterns($patterns);
+    onassar\Email\PostmarkUtils::setAPIKey($apiKey);
 
     // send
-    $email = new Email\PostmarkEmail();
+    $email = new onassar\Email\PostmarkEmail();
     $email->addToRecipient($address);
     $email->setSubject($subject);
     $email->setBody($body);
