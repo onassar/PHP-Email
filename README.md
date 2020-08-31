@@ -33,6 +33,7 @@ $sendId = $email->getSendId();
 ### Sample Postmark Mailing
 
 ``` php
+// load dependencies
 require_once APP . '/vendors/source/postmark-php/v0.5/src/Postmark/Mail.php';
 require_once APP . '/vendors/submodules/PHP-Email/PlatformUtils.class.php';
 require_once APP . '/vendors/submodules/PHP-Email/PostmarkkUtils.class.php';
