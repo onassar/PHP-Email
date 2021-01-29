@@ -68,12 +68,36 @@
         protected $_outboundSignatureKey = 'default';
 
         /**
+         * _replyToAddress
+         * 
+         * @access  protected
+         * @var     null|string (default: null)
+         */
+        protected $_replyToAddress = null;
+
+        /**
+         * _replyToName
+         * 
+         * @access  protected
+         * @var     null|string (default: null)
+         */
+        protected $_replyToName = null;
+
+        /**
          * _sendId
          * 
          * @access  protected
          * @var     null|string (default: null)
          */
         protected $_sendId = null;
+
+        /**
+         * _senderName
+         * 
+         * @access  protected
+         * @var     null|string (default: null)
+         */
+        protected $_senderName = null;
 
         /**
          * _subject
@@ -372,6 +396,54 @@
                 return false;
             }
             $this->_outboundSignatureKey = $outboundSignatureKey;
+            return true;
+        }
+
+        /**
+         * setReplyToAddress
+         * 
+         * @access  public
+         * @param   null|string $replyToAddress
+         * @return  bool
+         */
+        public function setReplyToAddress(?string $replyToAddress): bool
+        {
+            if ($replyToAddress === null) {
+                return false;
+            }
+            $this->_replyToAddress = $replyToAddress;
+            return true;
+        }
+
+        /**
+         * setReplyToName
+         * 
+         * @access  public
+         * @param   null|string $replyToName
+         * @return  bool
+         */
+        public function setReplyToName(?string $replyToName): bool
+        {
+            if ($replyToName === null) {
+                return false;
+            }
+            $this->_replyToName = $replyToName;
+            return true;
+        }
+
+        /**
+         * setSenderName
+         * 
+         * @access  public
+         * @param   null|string $senderName
+         * @return  bool
+         */
+        public function setSenderName(?string $senderName): bool
+        {
+            if ($senderName === null) {
+                return false;
+            }
+            $this->_senderName = $senderName;
             return true;
         }
 

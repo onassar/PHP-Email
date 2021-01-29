@@ -164,8 +164,26 @@
             $signature = $this->_getOutboundSignature();
             $email = $signature['email'];
             $address = $email['address'];
-            $name = $email['name'];
+            $name = $this->_senderName ?? $email['name'];
             $client->from($address, $name);
+            return true;
+        }
+
+        /**
+         * _setClientReplyTo
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientReplyTo(): bool
+        {
+            $replyToAddress = $this->_replyToAddress;
+            if ($replyToAddress === null) {
+                return false;
+            }
+            $client = $this->_client;
+            $replyToName = $this->_replyToName;
+            $client->replyTo($replyToAddress, $replyToName);
             return true;
         }
 
@@ -255,6 +273,7 @@
             $this->_setClientAttachments();
             $this->_setClientBody();
             $this->_setClientFrom();
+            $this->_setClientReplyTo();
             $this->_setClientSubject();
             $this->_setClientTags();
             $this->_setClientToRecipients();
