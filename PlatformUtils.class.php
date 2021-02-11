@@ -14,6 +14,8 @@
         /**
          * _apiKey
          * 
+         * API key associated with sending emails for a specific platforn.
+         * 
          * @access  protected
          * @var     null|string (default: null)
          * @static
@@ -116,6 +118,22 @@
         {
             $apiKey = static::$_apiKey;
             return $apiKey;
+        }
+
+        /**
+         * getInlinedMarkupStyles
+         * 
+         * @access  public
+         * @static
+         * @param   string $markup
+         * @return  string
+         */
+        public static function getInlinedMarkupStyles(string $markup): string
+        {
+            $premailer = new \Premailer();
+            $premailer->setMarkup($markup);
+            $response = $premailer->getInlinedMarkup($markup);
+            return $response;
         }
 
         /**
