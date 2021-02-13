@@ -15,6 +15,14 @@
     final class PostmarkEmail extends OutboundEmail
     {
         /**
+         * _plainText
+         * 
+         * @access  protected
+         * @var     null|string (default: null)
+         */
+        protected $_plainText = null;
+
+        /**
          * __construct
          * 
          * @access  public
@@ -153,6 +161,24 @@
         }
 
         /**
+         * _setClientPlainText
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientPlainText(): bool
+        {
+            $plainText = $this->_plainText;
+            if ($plainText === null) {
+                return false;
+            }
+            $plainText = $this->_plainText;
+            $client = $this->_client;
+            $client->messagePlain($plainText);
+            return true;
+        }
+
+        /**
          * _setClientFrom
          * 
          * @access  protected
@@ -272,6 +298,7 @@
             }
             $this->_setClientAttachments();
             $this->_setClientBody();
+            $this->_setClientPlainText();
             $this->_setClientFrom();
             $this->_setClientReplyTo();
             $this->_setClientSubject();
@@ -280,5 +307,21 @@
             $this->_setClientTracking();
             $successful = $this->_attemptClientSend();
             return $successful;
+        }
+
+        /**
+         * setPlainText
+         * 
+         * @access  public
+         * @param   null|string $plainText
+         * @return  bool
+         */
+        public function setPlainText(?string $plainText): bool
+        {
+            if ($plainText === null) {
+                return false;
+            }
+            $this->_plainText = $plainText;
+            return true;
         }
     }
