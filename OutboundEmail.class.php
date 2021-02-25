@@ -60,6 +60,14 @@
         protected $_lastException = null;
 
         /**
+         * _metadata
+         * 
+         * @access  protected
+         * @var     null|Object (default: null)
+         */
+        protected $_metadata = null;
+
+        /**
          * _outboundSignatureKey
          * 
          * @access  protected
@@ -380,6 +388,22 @@
                 return false;
             }
             $this->_html = $html;
+            return true;
+        }
+
+        /**
+         * setMetadata
+         * 
+         * @access  public
+         * @param   null|array $metadata
+         * @return  bool
+         */
+        public function setMetadata(?array $metadata): bool
+        {
+            if ($metadata === null) {
+                return false;
+            }
+            $this->_metadata = $metadata;
             return true;
         }
 

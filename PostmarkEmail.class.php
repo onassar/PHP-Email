@@ -196,6 +196,23 @@
         }
 
         /**
+         * _setClientMetadata
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientMetadata(): bool
+        {
+            $metadata = $this->_metadata;
+            if ($metadata === null) {
+                return false;
+            }
+            $client = $this->_client;
+            $client->metadata($metadata);
+            return true;
+        }
+
+        /**
          * _setClientReplyTo
          * 
          * @access  protected
@@ -300,6 +317,7 @@
             $this->_setClientBody();
             $this->_setClientPlainText();
             $this->_setClientFrom();
+            $this->_setClientMetadata();
             $this->_setClientReplyTo();
             $this->_setClientSubject();
             $this->_setClientTags();
