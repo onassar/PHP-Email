@@ -27,6 +27,15 @@
         protected static $_accountAPIKey = null;
 
         /**
+         * _lastError
+         * 
+         * @access  protected
+         * @var     null|array (default: null)
+         * @static
+         */
+        protected static $_lastError = null;
+
+        /**
          * _createSenderSignature
          * 
          * @link    https://postmarkapp.com/developer/api/signatures-api#create-signature
@@ -260,6 +269,7 @@
             if ($error === null || (int) $error === 0) {
                 return $response;
             }
+            static::$_lastError = $response;
             return null;
         }
 
@@ -279,6 +289,19 @@
                 return true;
             }
             return false;
+        }
+
+        /**
+         * getLastError
+         * 
+         * @access  public
+         * @static
+         * @return  null|array
+         */
+        public static function getLastError(): ?array
+        {
+            $lastError = static::$_lastError;
+            return $lastError;
         }
 
         /**
