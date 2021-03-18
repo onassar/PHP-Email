@@ -16,7 +16,7 @@
     final class PostmarkUtils extends PlatformUtils
     {
         /**
-         * _accountAPIKey
+         * _accountToken
          * 
          * API key associated with managing a Postmark account.
          * 
@@ -24,7 +24,7 @@
          * @var     null|string (default: null)
          * @static
          */
-        protected static $_accountAPIKey = null;
+        protected static $_accountToken = null;
 
         /**
          * _lastError
@@ -34,6 +34,17 @@
          * @static
          */
         protected static $_lastError = null;
+
+        /**
+         * _serverToken
+         * 
+         * API key associated with managing a Postmark server.
+         * 
+         * @access  protected
+         * @var     null|string (default: null)
+         * @static
+         */
+        protected static $_serverToken = null;
 
         /**
          * _createSenderSignature
@@ -49,7 +60,8 @@
         protected static function _createSenderSignature(string $address, string $name, ?string $replyToAddress = null): array
         {
             $url = static::_getCreateSenderSignatureURL();
-            $request = static::_getRequest($url);
+            $tokenType = 'account';
+            $request = static::_getRequest($url, $tokenType);
             $data = static::_getCreateSenderSignatureData($address, $name, $replyToAddress);
             $postContent = $data;
             $postContent = json_encode($postContent);
@@ -70,23 +82,24 @@
         protected static function _deleteSenderSignature(string $senderSignatureId): array
         {
             $url = static::_getDeleteSenderSignatureURL($senderSignatureId);
-            $request = static::_getRequest($url);
+            $tokenType = 'account';
+            $request = static::_getRequest($url, $tokenType);
             $request->setRequestMethod('delete');
             $response = $request->get();
             return $response;
         }
 
         /**
-         * _getAccountAPIKey
+         * _getAccountToken
          * 
          * @access  protected
          * @static
-         * @return  string
+         * @return  null|string
          */
-        protected static function _getAccountAPIKey(): string
+        protected static function _getAccountToken(): ?string
         {
-            $accountAPIKey = static::$_accountAPIKey;
-            return $accountAPIKey;
+            $accountToken = static::$_accountToken;
+            return $accountToken;
         }
 
         /**
@@ -155,19 +168,54 @@
         }
 
         /**
+         * _getMessageDetails
+         * 
+         * @link    https://postmarkapp.com/developer/api/messages-api#outbound-message-details
+         * @access  protected
+         * @static
+         * @param   string $messageId
+         * @return  array
+         */
+        protected static function _getMessageDetails(string $messageId): array
+        {
+            $url = static::_getMessageDetailsURL($messageId);
+            $tokenType = 'server';
+            $request = static::_getRequest($url, $tokenType);
+            $response = $request->get();
+            return $response;
+        }
+
+        /**
+         * _getMessageDetailsURL
+         * 
+         * @access  protected
+         * @static
+         * @param   string $messageId
+         * @return  string
+         */
+        protected static function _getMessageDetailsURL(string $messageId): string
+        {
+            $path = '/messages/outbound/' . ($messageId) . '/details';
+            $host = 'api.postmarkapp.com';
+            $url = Utils\Shared\URL::getURL($path, $host);
+            return $url;
+        }
+
+        /**
          * _getRequest
          * 
          * @access  protected
          * @static
          * @param   string $url
+         * @param   string $tokenType
          * @return  onassar\RemoteRequests\Base
          */
-        protected static function _getRequest(string $url): onassar\RemoteRequests\Base
+        protected static function _getRequest(string $url, string $tokenType): onassar\RemoteRequests\Base
         {
             $request = Utils\Shared\Requests::getRemoteRequest($url);
             $contentType = 'application/json';
             $request->setExpectedResponseContentType($contentType);
-            $headers = static::_getRequestHeaders();
+            $headers = static::_getRequestHeaders($tokenType);
             $header = implode("\r\n", $headers);
             $http = compact('header');
             $streamOptions = compact('http');
@@ -180,13 +228,18 @@
          * 
          * @access  protected
          * @static
+         * @param   string $tokenType
          * @return  array
          */
-        protected static function _getRequestHeaders(): array
+        protected static function _getRequestHeaders(string $tokenType): array
         {
             $headers = array();
-            $accountAPIKey = static::_getAccountAPIKey();
-            $header = 'X-Postmark-Account-Token: ' . ($accountAPIKey);
+            $accountToken = static::_getAccountToken();
+            $serverToken = static::_getServerToken();
+            $header = 'X-Postmark-Account-Token: ' . ($accountToken);
+            if ($tokenType === 'server') {
+                $header = 'X-Postmark-Server-Token: ' . ($serverToken);
+            }
             array_push($headers, $header);
             $header = 'Content-Type: application/json';
             array_push($headers, $header);
@@ -212,6 +265,19 @@
         }
 
         /**
+         * _getServerToken
+         * 
+         * @access  protected
+         * @static
+         * @return  null|string
+         */
+        protected static function _getServerToken(): ?string
+        {
+            $serverToken = static::$_serverToken;
+            return $serverToken;
+        }
+
+        /**
          * _listSenderSignatures
          * 
          * @link    https://postmarkapp.com/developer/api/signatures-api#list-sender-signatures
@@ -224,7 +290,8 @@
         protected static function _listSenderSignatures(int $count, int $offset): array
         {
             $url = static::_getCreateSenderSignatureURL();
-            $request = static::_getRequest($url);
+            $tokenType = 'account';
+            $request = static::_getRequest($url, $tokenType);
             $request->setRequestDataValue('count', $count);
             $request->setRequestDataValue('offset', $offset);
             $response = $request->get();
@@ -244,7 +311,8 @@
         protected static function _resendSenderSignatureConfirmation(string $senderSignatureId): array
         {
             $url = static::_getResendSenderSignatureConfirmationURL($senderSignatureId);
-            $request = static::_getRequest($url);
+            $tokenType = 'account';
+            $request = static::_getRequest($url, $tokenType);
             $postContent = array();
             $postContent = json_encode($postContent);
             $request->setPOSTContent($postContent);
@@ -305,6 +373,25 @@
         }
 
         /**
+         * getMessage
+         * 
+         * @access  public
+         * @static
+         * @param   string $messageId
+         * @return  null|array
+         */
+        public static function getMessage(string $messageId): ?array
+        {
+            $response = static::_getMessageDetails($messageId);
+            $error = $response['ErrorCode'] ?? null;
+            if ($error === null || (int) $error === 0) {
+                return $response;
+            }
+            static::$_lastError = $response;
+            return null;
+        }
+
+        /**
          * listSenderSignatures
          * 
          * @access  public
@@ -338,16 +425,29 @@
         }
 
         /**
-         * setAccountAPIKey
+         * setAccountToken
          * 
          * @access  public
          * @static
-         * @param   string $accountAPIKey
+         * @param   string $accountToken
          * @return  void
          */
-        public static function setAccountAPIKey(string $accountAPIKey): void
+        public static function setAccountToken(string $accountToken): void
         {
-            static::$_accountAPIKey = $accountAPIKey;
+            static::$_accountToken = $accountToken;
+        }
+
+        /**
+         * setServerToken
+         * 
+         * @access  public
+         * @static
+         * @param   string $serverToken
+         * @return  void
+         */
+        public static function setServerToken(string $serverToken): void
+        {
+            static::$_serverToken = $serverToken;
         }
 
         /**
