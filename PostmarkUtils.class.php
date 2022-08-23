@@ -321,6 +321,26 @@
         }
 
         /**
+         * batch
+         * 
+         * @access  public
+         * @static
+         * @param   array $payloads
+         * @return  null|array
+         */
+        public static function batch(array $payloads): ?array
+        {
+            $url = 'https://api.postmarkapp.com/email/batch';
+            $tokenType = 'server';
+            $request = static::_getRequest($url, $tokenType);
+            $postContent = $payloads;
+            $postContent = json_encode($postContent);
+            $request->setPOSTContent($postContent);
+            $response = $request->post();
+            return $response;
+        }
+
+        /**
          * createSenderSignature
          * 
          * @access  public
