@@ -324,6 +324,7 @@
          * batch
          * 
          * @link    https://postmarkapp.com/developer/api/email-api#send-batch-emails
+         * @see     https://postmarkapp.com/support/article/1208-how-to-add-an-unsubscribe-link
          * @access  public
          * @static
          * @param   array $payloads
