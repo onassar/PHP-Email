@@ -231,6 +231,23 @@
         }
 
         /**
+         * _setClientStream
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientStream(): bool
+        {
+            $messageStream = $this->_messageStream;
+            if ($messageStream === null) {
+                return false;
+            }
+            $client = $this->_client;
+            $client->messageStream($messageStream);
+            return true;
+        }
+
+        /**
          * _setClientSubject
          * 
          * @access  protected
@@ -318,6 +335,7 @@
             $this->_setClientPlainText();
             $this->_setClientFrom();
             $this->_setClientMetadata();
+            $this->_setClientStream();
             $this->_setClientReplyTo();
             $this->_setClientSubject();
             $this->_setClientTags();
