@@ -323,6 +323,7 @@
         /**
          * batch
          * 
+         * @link    https://postmarkapp.com/developer/api/email-api#send-batch-emails
          * @access  public
          * @static
          * @param   array $payloads
