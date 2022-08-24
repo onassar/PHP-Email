@@ -215,6 +215,7 @@
             $request = Utils\Shared\Requests::getRemoteRequest($url);
             $contentType = 'application/json';
             $request->setExpectedResponseContentType($contentType);
+            $request->setMaxAttempts(1);
             $headers = static::_getRequestHeaders($tokenType);
             $header = implode("\r\n", $headers);
             $http = compact('header');
