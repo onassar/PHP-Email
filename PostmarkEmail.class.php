@@ -15,6 +15,14 @@
     final class PostmarkEmail extends OutboundEmail
     {
         /**
+         * _messageStreamKey
+         * 
+         * @access  protected
+         * @var     null|string (default: null)
+         */
+        protected $_messageStreamKey = null;
+
+        /**
          * _plainText
          * 
          * @access  protected
@@ -196,6 +204,25 @@
         }
 
         /**
+         * _setClientMessageStream
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientMessageStream(): bool
+        {
+            $messageStreamKey = $this->_messageStreamKey;
+            if ($messageStreamKey === null) {
+                return false;
+            }
+            $client = $this->_client;
+            $messageStreams = PostmarkUtils::getMessageStreams();
+            $messageStreamId = $messageStreams[$messageStreamKey]['id'];
+            $client->messageStream($messageStreamId);
+            return true;
+        }
+
+        /**
          * _setClientMetadata
          * 
          * @access  protected
@@ -227,23 +254,6 @@
             $client = $this->_client;
             $replyToName = $this->_replyToName;
             $client->replyTo($replyToAddress, $replyToName);
-            return true;
-        }
-
-        /**
-         * _setClientStream
-         * 
-         * @access  protected
-         * @return  bool
-         */
-        protected function _setClientStream(): bool
-        {
-            $messageStream = $this->_messageStream;
-            if ($messageStream === null) {
-                return false;
-            }
-            $client = $this->_client;
-            $client->messageStream($messageStream);
             return true;
         }
 
@@ -335,7 +345,7 @@
             $this->_setClientPlainText();
             $this->_setClientFrom();
             $this->_setClientMetadata();
-            $this->_setClientStream();
+            $this->_setClientMessageStream();
             $this->_setClientReplyTo();
             $this->_setClientSubject();
             $this->_setClientTags();
@@ -343,6 +353,22 @@
             $this->_setClientTracking();
             $successful = $this->_attemptClientSend();
             return $successful;
+        }
+
+        /**
+         * setMessageStreamKey
+         * 
+         * @access  public
+         * @param   null|string $messageStreamKey
+         * @return  bool
+         */
+        public function setMessageStreamKey(?string $messageStreamKey): bool
+        {
+            if ($messageStreamKey === null) {
+                return false;
+            }
+            $this->_messageStreamKey = $messageStreamKey;
+            return true;
         }
 
         /**

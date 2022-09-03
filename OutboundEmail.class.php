@@ -60,14 +60,6 @@
         protected $_lastException = null;
 
         /**
-         * _messageStream
-         * 
-         * @access  protected
-         * @var     null|string (default: null)
-         */
-        protected $_messageStream = null;
-
-        /**
          * _metadata
          * 
          * @access  protected
@@ -396,22 +388,6 @@
                 return false;
             }
             $this->_html = $html;
-            return true;
-        }
-
-        /**
-         * setMessageStream
-         * 
-         * @access  public
-         * @param   null|string $messageStream
-         * @return  bool
-         */
-        public function setMessageStream(?string $messageStream): bool
-        {
-            if ($messageStream === null) {
-                return false;
-            }
-            $this->_messageStream = $messageStream;
             return true;
         }
 

@@ -36,6 +36,15 @@
         protected static $_lastError = null;
 
         /**
+         * _messageStreams
+         * 
+         * @access  protected
+         * @var     array (default: array())
+         * @static
+         */
+        protected static $_messageStreams = array();
+
+        /**
          * _serverToken
          * 
          * API key associated with managing a Postmark server.
@@ -415,6 +424,19 @@
         }
 
         /**
+         * getMessageStreams
+         * 
+         * @access  public
+         * @static
+         * @return  array
+         */
+        public static function getMessageStreams(): array
+        {
+            $messageStreams = static::$_messageStreams;
+            return $messageStreams;
+        }
+
+        /**
          * listSenderSignatures
          * 
          * @access  public
@@ -458,6 +480,19 @@
         public static function setAccountToken(string $accountToken): void
         {
             static::$_accountToken = $accountToken;
+        }
+
+        /**
+         * setMessageStreams
+         * 
+         * @access  public
+         * @static
+         * @param   array $messageStreams
+         * @return  void
+         */
+        public static function setMessageStreams(array $messageStreams): void
+        {
+            static::$_messageStreams = $messageStreams;
         }
 
         /**
