@@ -374,6 +374,47 @@
         }
 
         /**
+         * deleteMessageStreamSuppression
+         * 
+         * @link    https://postmarkapp.com/developer/api/suppressions-api#delete-a-suppression
+         * @access  public
+         * @static
+         * @param   string $emailAddress
+         * @param   string $messageStreamKey
+         * @return  null|array
+         */
+        public static function deleteMessageStreamSuppression(string $emailAddress, string $messageStreamKey): ?array
+        {
+            // Server token
+            $args = array('postmark', 'serverToken');
+            $serverToken = \Config\Base::getAuthProperty(... $args);
+            \onassar\Email\PostmarkUtils::setServerToken($serverToken);
+
+            // Request
+            $args = array('postmark', 'streams', $messageStreamKey, 'id');
+            $messageStreamId = \Config\Base::getGatewaySetting(... $args);
+            $url = 'https://api.postmarkapp.com/message-streams/' . ($messageStreamId) . '/suppressions/delete';
+            $tokenType = 'server';
+            $request = static::_getRequest($url, $tokenType);
+
+            // Suppression
+            $EmailAddress = $emailAddress;
+            $suppression = compact('EmailAddress');
+
+            // Suppressions
+            $Suppressions = array();
+            $Suppressions[] = $suppression;
+
+            // Payload
+            $payload = compact('Suppressions');
+            $postContent = $payload;
+            $postContent = json_encode($postContent);
+            $request->setPOSTContent($postContent);
+            $response = $request->post();
+            return $response;
+        }
+
+        /**
          * deleteSenderSignature
          * 
          * @access  public
