@@ -42,6 +42,29 @@
         }
 
         /**
+         * _attemptClientSend
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _attemptClientSend(): bool
+        {
+            $client = $this->_client;
+            $properties = $this->_clientSendProperties;
+            try {
+                $response = $client->send($properties);
+                if ($response === null) {
+                    return false;
+                }
+                $this->_sendId = $response['MessageId'];
+                return true;
+            } catch (\Exception $exception) {
+                $this->_lastException = $exception;
+                return false;
+            }
+        }
+
+        /**
          * _buildClient
          * 
          * @access  protected
@@ -70,35 +93,15 @@
         }
 
         /**
-         * _getClientSendProperties
+         * _getOutboundSignatures
          * 
          * @access  protected
          * @return  array
          */
-        protected function _getClientSendProperties(): array
+        protected function _getOutboundSignatures(): array
         {
-            $clientSendProperties = $this->_clientSendProperties;
-            return $clientSendProperties;
-        }
-
-        /**
-         * _attemptClientSend
-         * 
-         * @access  protected
-         * @return  bool
-         */
-        protected function _attemptClientSend(): bool
-        {
-            $client = $this->_client;
-            $properties = $this->_getClientSendProperties();
-            try {
-                $response = $client->send($properties);
-                $this->_sendId = $response['MessageId'];
-                return true;
-            } catch (\Exception $exception) {
-                $this->_lastException = $exception;
-                return false;
-            }
+            $outboundSignatures = SESUtils::getOutboundSignatures();
+            return $outboundSignatures;
         }
 
         /**
@@ -121,16 +124,32 @@
          */
         protected function _getSendEmails(): bool
         {
-            return true;
+            $sendEmails = SESUtils::getSendEmails();
+            return $sendEmails;
         }
 
         /**
-         * _setClientBody
+         * _setClientFrom
          * 
          * @access  protected
          * @return  bool
          */
-        protected function _setClientBody(): bool
+        protected function _setClientFrom(): bool
+        {
+            $client = $this->_client;
+            $signature = $this->_getOutboundSignature();
+            $email = $signature['email'];
+            $this->_clientSendProperties['source'] = $email;
+            return true;
+        }
+
+        /**
+         * _setClientMessageBodyHTML
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientMessageBodyHTML(): bool
         {
             $body = $this->_getBody();
             if ($body === null) {
@@ -145,12 +164,12 @@
         }
 
         /**
-         * _setClientPlainText
+         * _setClientMessageBodyText
          * 
          * @access  protected
          * @return  bool
          */
-        protected function _setClientPlainText(): bool
+        protected function _setClientMessageBodyText(): bool
         {
             $text = $this->_plainText;
             if ($text === null) {
@@ -159,34 +178,6 @@
             $this->_clientSendProperties['text'] = $text;
             return true;
         }
-
-        /**
-         * _setClientFrom
-         * 
-         * @access  protected
-         * @return  bool
-         */
-        // protected function _setClientFrom(): bool
-        // {
-        //     $replyToAddress = $this->_replyToAddress;
-        //     if ($replyToAddress === null) {
-        //         return false;
-        //     }
-        //     $replyToName = $this->_replyToName;
-        //     $replyTo = array();
-        //     $replyTo['address'] = $replyToAddress;
-        //     $replyTo['name'] = $replyToName;
-        //     $this->_clientSendProperties['source'] = $replyTo;
-        //     return true;
-
-        //     $client = $this->_client;
-        //     $signature = $this->_getOutboundSignature();
-        //     $email = $signature['email'];
-        //     $address = $email['address'];
-        //     $name = $this->_senderName ?? $email['name'];
-        //     $client->from($address, $name);
-        //     return true;
-        // }
 
         /**
          * _setClientReplyTo
@@ -245,9 +236,9 @@
             if ($validSendAttempt === false) {
                 return false;
             }
-            $this->_setClientBody();
-            $this->_setClientPlainText();
-            // $this->_setClientFrom();
+            $this->_setClientMessageBodyHTML();
+            $this->_setClientMessageBodyText();
+            $this->_setClientFrom();
             $this->_setClientReplyTo();
             $this->_setClientSubject();
             $this->_setClientToRecipients();
