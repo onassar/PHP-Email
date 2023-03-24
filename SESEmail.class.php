@@ -9,7 +9,6 @@
      * @final
      * @extends OutboundEmail
      * @link    https://github.com/onassar/PHP-Email
-     * @link    https://github.com/Znarkus/postmark-php
      * @author  Oliver Nassar <onassar@gmail.com>
      */
     final class SESEmail extends OutboundEmail
