@@ -205,6 +205,10 @@
         /**
          * _validSendAttempt
          * 
+         * Returns true indicating that a send should continue only if the
+         * global setting (via the _getSendEmails method) is set to true, or
+         * else if at least one recipient's email address is in the whitelist.
+         * 
          * @access  protected
          * @return  bool
          */
@@ -224,6 +228,8 @@
 
         /**
          * _whitelistBasedToRecipientsFiltering
+         * 
+         * Remove any receipients who aren't on the defined whitelist.
          * 
          * @see     https://stackoverflow.com/questions/7558022/php-reindex-array
          * @access  protected
