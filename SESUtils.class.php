@@ -2,7 +2,6 @@
 
     // Namespace overhead
     namespace onassar\Email;
-    use onassar;
     use Utils;
 
     /**

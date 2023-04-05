@@ -388,7 +388,7 @@
             // Server token
             $args = array('postmark', 'serverToken');
             $serverToken = \Config\Base::getAuthProperty(... $args);
-            \onassar\Email\PostmarkUtils::setServerToken($serverToken);
+            onassar\Email\PostmarkUtils::setServerToken($serverToken);
 
             // Request
             $args = array('postmark', 'streams', $messageStreamKey, 'id');
