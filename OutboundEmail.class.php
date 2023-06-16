@@ -20,6 +20,14 @@
         protected $_attachments = array();
 
         /**
+         * _bccRecipients
+         * 
+         * @access  protected
+         * @var     array (default: array())
+         */
+        protected $_bccRecipients = array();
+
+        /**
          * _body
          * 
          * @access  protected
@@ -34,6 +42,14 @@
          * @var     null|string (default: null)
          */
         protected $_bodyPath = null;
+
+        /**
+         * _ccRecipients
+         * 
+         * @access  protected
+         * @var     array (default: array())
+         */
+        protected $_ccRecipients = array();
 
         /**
          * _client
@@ -288,6 +304,42 @@
                 $path = $attachment['path'];
                 $this->addAttachment($basename, $path);
             }
+            return true;
+        }
+
+        /**
+         * addBCCRecipient
+         * 
+         * @access  public
+         * @param   null|string $address
+         * @param   null|string $name (default: null)
+         * @return  bool
+         */
+        public function addBCCRecipient(?string $address, ?string $name = null): bool
+        {
+            if ($address === null) {
+                return false;
+            }
+            $recipient = compact('address', 'name');
+            array_push($this->_bccRecipients, $recipient);
+            return true;
+        }
+
+        /**
+         * addCCRecipient
+         * 
+         * @access  public
+         * @param   null|string $address
+         * @param   null|string $name (default: null)
+         * @return  bool
+         */
+        public function addCCRecipient(?string $address, ?string $name = null): bool
+        {
+            if ($address === null) {
+                return false;
+            }
+            $recipient = compact('address', 'name');
+            array_push($this->_ccRecipients, $recipient);
             return true;
         }
 

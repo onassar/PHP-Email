@@ -128,6 +128,42 @@
         }
 
         /**
+         * _setClientBCCRecipients
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientBCCRecipients(): bool
+        {
+            $bccRecipients = $this->_bccRecipients;
+            $client = $this->_client;
+            foreach ($bccRecipients as $bccRecipient) {
+                $address = $bccRecipient['address'];
+                $name = $bccRecipient['name'];
+                $client->addBcc($address, $name);
+            }
+            return true;
+        }
+
+        /**
+         * _setClientCCRecipients
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientCCRecipients(): bool
+        {
+            $ccRecipients = $this->_ccRecipients;
+            $client = $this->_client;
+            foreach ($ccRecipients as $ccRecipient) {
+                $address = $ccRecipient['address'];
+                $name = $ccRecipient['name'];
+                $client->addCc($address, $name);
+            }
+            return true;
+        }
+
+        /**
          * _setClientFrom
          * 
          * @access  protected
@@ -241,6 +277,8 @@
             $this->_setClientReplyTo();
             $this->_setClientSubject();
             $this->_setClientToRecipients();
+            $this->_setClientCCRecipients();
+            $this->_setClientBCCRecipients();
             $successful = $this->_attemptClientSend();
             return $successful;
         }
