@@ -140,7 +140,7 @@
             foreach ($bccRecipients as $bccRecipient) {
                 $address = $bccRecipient['address'];
                 $name = $bccRecipient['name'];
-                $client->addBcc($address, $name);
+                // $this->_clientSendProperties['bcc'][] = array($address, $name);
             }
             return true;
         }
@@ -158,7 +158,7 @@
             foreach ($ccRecipients as $ccRecipient) {
                 $address = $ccRecipient['address'];
                 $name = $ccRecipient['name'];
-                $client->addCc($address, $name);
+                // $this->_clientSendProperties['cc'][] = array($address, $name);
             }
             return true;
         }
