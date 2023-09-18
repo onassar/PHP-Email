@@ -112,9 +112,9 @@
          * 
          * @access  public
          * @static
-         * @return  string
+         * @return  null|string
          */
-        public static function getAPIKey(): string
+        public static function getAPIKey(): ?string
         {
             $apiKey = static::$_apiKey;
             return $apiKey;
