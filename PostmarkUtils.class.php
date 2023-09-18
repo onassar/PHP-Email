@@ -36,6 +36,15 @@
         protected static $_lastError = null;
 
         /**
+         * _messageStreams
+         * 
+         * @access  protected
+         * @var     array (default: array())
+         * @static
+         */
+        protected static $_messageStreams = array();
+
+        /**
          * _serverToken
          * 
          * API key associated with managing a Postmark server.
@@ -215,6 +224,7 @@
             $request = Utils\Shared\Requests::getRemoteRequest($url);
             $contentType = 'application/json';
             $request->setExpectedResponseContentType($contentType);
+            $request->setMaxAttempts(1);
             $headers = static::_getRequestHeaders($tokenType);
             $header = implode("\r\n", $headers);
             $http = compact('header');
@@ -321,6 +331,28 @@
         }
 
         /**
+         * batch
+         * 
+         * @link    https://postmarkapp.com/developer/api/email-api#send-batch-emails
+         * @see     https://postmarkapp.com/support/article/1208-how-to-add-an-unsubscribe-link
+         * @access  public
+         * @static
+         * @param   array $payloads
+         * @return  null|array
+         */
+        public static function batch(array $payloads): ?array
+        {
+            $url = 'https://api.postmarkapp.com/email/batch';
+            $tokenType = 'server';
+            $request = static::_getRequest($url, $tokenType);
+            $postContent = $payloads;
+            $postContent = json_encode($postContent);
+            $request->setPOSTContent($postContent);
+            $response = $request->post();
+            return $response;
+        }
+
+        /**
          * createSenderSignature
          * 
          * @access  public
@@ -339,6 +371,47 @@
             }
             static::$_lastError = $response;
             return null;
+        }
+
+        /**
+         * deleteMessageStreamSuppression
+         * 
+         * @link    https://postmarkapp.com/developer/api/suppressions-api#delete-a-suppression
+         * @access  public
+         * @static
+         * @param   string $emailAddress
+         * @param   string $messageStreamKey
+         * @return  null|array
+         */
+        public static function deleteMessageStreamSuppression(string $emailAddress, string $messageStreamKey): ?array
+        {
+            // Server token
+            $args = array('postmark', 'serverToken');
+            $serverToken = \Config\Base::getAuthProperty(... $args);
+            onassar\Email\PostmarkUtils::setServerToken($serverToken);
+
+            // Request
+            $args = array('postmark', 'streams', $messageStreamKey, 'id');
+            $messageStreamId = \Config\Base::getGatewaySetting(... $args);
+            $url = 'https://api.postmarkapp.com/message-streams/' . ($messageStreamId) . '/suppressions/delete';
+            $tokenType = 'server';
+            $request = static::_getRequest($url, $tokenType);
+
+            // Suppression
+            $EmailAddress = $emailAddress;
+            $suppression = compact('EmailAddress');
+
+            // Suppressions
+            $Suppressions = array();
+            $Suppressions[] = $suppression;
+
+            // Payload
+            $payload = compact('Suppressions');
+            $postContent = $payload;
+            $postContent = json_encode($postContent);
+            $request->setPOSTContent($postContent);
+            $response = $request->post();
+            return $response;
         }
 
         /**
@@ -392,6 +465,19 @@
         }
 
         /**
+         * getMessageStreams
+         * 
+         * @access  public
+         * @static
+         * @return  array
+         */
+        public static function getMessageStreams(): array
+        {
+            $messageStreams = static::$_messageStreams;
+            return $messageStreams;
+        }
+
+        /**
          * listSenderSignatures
          * 
          * @access  public
@@ -435,6 +521,19 @@
         public static function setAccountToken(string $accountToken): void
         {
             static::$_accountToken = $accountToken;
+        }
+
+        /**
+         * setMessageStreams
+         * 
+         * @access  public
+         * @static
+         * @param   array $messageStreams
+         * @return  void
+         */
+        public static function setMessageStreams(array $messageStreams): void
+        {
+            static::$_messageStreams = $messageStreams;
         }
 
         /**

@@ -20,6 +20,14 @@
         protected $_attachments = array();
 
         /**
+         * _bccRecipients
+         * 
+         * @access  protected
+         * @var     array (default: array())
+         */
+        protected $_bccRecipients = array();
+
+        /**
          * _body
          * 
          * @access  protected
@@ -34,6 +42,14 @@
          * @var     null|string (default: null)
          */
         protected $_bodyPath = null;
+
+        /**
+         * _ccRecipients
+         * 
+         * @access  protected
+         * @var     array (default: array())
+         */
+        protected $_ccRecipients = array();
 
         /**
          * _client
@@ -205,6 +221,10 @@
         /**
          * _validSendAttempt
          * 
+         * Returns true indicating that a send should continue only if the
+         * global setting (via the _getSendEmails method) is set to true, or
+         * else if at least one recipient's email address is in the whitelist.
+         * 
          * @access  protected
          * @return  bool
          */
@@ -224,6 +244,8 @@
 
         /**
          * _whitelistBasedToRecipientsFiltering
+         * 
+         * Remove any receipients who aren't on the defined whitelist.
          * 
          * @see     https://stackoverflow.com/questions/7558022/php-reindex-array
          * @access  protected
@@ -282,6 +304,42 @@
                 $path = $attachment['path'];
                 $this->addAttachment($basename, $path);
             }
+            return true;
+        }
+
+        /**
+         * addBCCRecipient
+         * 
+         * @access  public
+         * @param   null|string $address
+         * @param   null|string $name (default: null)
+         * @return  bool
+         */
+        public function addBCCRecipient(?string $address, ?string $name = null): bool
+        {
+            if ($address === null) {
+                return false;
+            }
+            $recipient = compact('address', 'name');
+            array_push($this->_bccRecipients, $recipient);
+            return true;
+        }
+
+        /**
+         * addCCRecipient
+         * 
+         * @access  public
+         * @param   null|string $address
+         * @param   null|string $name (default: null)
+         * @return  bool
+         */
+        public function addCCRecipient(?string $address, ?string $name = null): bool
+        {
+            if ($address === null) {
+                return false;
+            }
+            $recipient = compact('address', 'name');
+            array_push($this->_ccRecipients, $recipient);
             return true;
         }
 

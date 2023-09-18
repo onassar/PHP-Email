@@ -15,6 +15,14 @@
     final class PostmarkEmail extends OutboundEmail
     {
         /**
+         * _messageStreamKey
+         * 
+         * @access  protected
+         * @var     null|string (default: null)
+         */
+        protected $_messageStreamKey = null;
+
+        /**
          * _plainText
          * 
          * @access  protected
@@ -139,6 +147,42 @@
         }
 
         /**
+         * _setClientBCCRecipients
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientBCCRecipients(): bool
+        {
+            $bccRecipients = $this->_bccRecipients;
+            $client = $this->_client;
+            foreach ($bccRecipients as $bccRecipient) {
+                $address = $bccRecipient['address'];
+                $name = $bccRecipient['name'];
+                $client->addBcc($address, $name);
+            }
+            return true;
+        }
+
+        /**
+         * _setClientCCRecipients
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientCCRecipients(): bool
+        {
+            $ccRecipients = $this->_ccRecipients;
+            $client = $this->_client;
+            foreach ($ccRecipients as $ccRecipient) {
+                $address = $ccRecipient['address'];
+                $name = $ccRecipient['name'];
+                $client->addCc($address, $name);
+            }
+            return true;
+        }
+
+        /**
          * _setClientBody
          * 
          * @access  protected
@@ -192,6 +236,25 @@
             $address = $email['address'];
             $name = $this->_senderName ?? $email['name'];
             $client->from($address, $name);
+            return true;
+        }
+
+        /**
+         * _setClientMessageStream
+         * 
+         * @access  protected
+         * @return  bool
+         */
+        protected function _setClientMessageStream(): bool
+        {
+            $messageStreamKey = $this->_messageStreamKey;
+            if ($messageStreamKey === null) {
+                return false;
+            }
+            $client = $this->_client;
+            $messageStreams = PostmarkUtils::getMessageStreams();
+            $messageStreamId = $messageStreams[$messageStreamKey]['id'];
+            $client->messageStream($messageStreamId);
             return true;
         }
 
@@ -318,13 +381,32 @@
             $this->_setClientPlainText();
             $this->_setClientFrom();
             $this->_setClientMetadata();
+            $this->_setClientMessageStream();
             $this->_setClientReplyTo();
             $this->_setClientSubject();
             $this->_setClientTags();
             $this->_setClientToRecipients();
+            $this->_setClientCCRecipients();
+            $this->_setClientBCCRecipients();
             $this->_setClientTracking();
             $successful = $this->_attemptClientSend();
             return $successful;
+        }
+
+        /**
+         * setMessageStreamKey
+         * 
+         * @access  public
+         * @param   null|string $messageStreamKey
+         * @return  bool
+         */
+        public function setMessageStreamKey(?string $messageStreamKey): bool
+        {
+            if ($messageStreamKey === null) {
+                return false;
+            }
+            $this->_messageStreamKey = $messageStreamKey;
+            return true;
         }
 
         /**
