@@ -176,6 +176,19 @@
         }
 
         /**
+         * setAPIKey
+         * 
+         * @access  public
+         * @static
+         * @param   string $apiKey
+         * @return  void
+         */
+        public static function setAPIKey(string $apiKey): void
+        {
+            static::$_apiKey = $apiKey;
+        }
+
+        /**
          * setSendEmails
          * 
          * @access  public
@@ -190,18 +203,5 @@
             }
             static::$_sendEmails = $sendEmails;
             return true;
-        }
-
-        /**
-         * setAPIKey
-         * 
-         * @access  public
-         * @static
-         * @param   string $apiKey
-         * @return  void
-         */
-        public static function setAPIKey(string $apiKey): void
-        {
-            static::$_apiKey = $apiKey;
         }
     }
